@@ -1,0 +1,59 @@
+{
+  "name": "Texture2D_Normal",
+  "assetType": "Texture2D",
+  "description": "法線貼圖預設，適用於 PBR 材質的表面細節法線貼圖",
+  "settings": {
+    "compressionSettings": "TC_Normalmap",
+    "mipmapGenSettings": "TMGS_FromTextureGroup",
+    "textureGroup": "TEXTUREGROUP_WorldNormalMap",
+    "sRGB": false,
+    "maxTextureSize": 4096,
+    "lodBias": 0,
+    "neverStream": false,
+    "virtualTextureStreaming": false,
+    "filter": "TF_Default",
+    "addressX": "TA_Wrap",
+    "addressY": "TA_Wrap",
+    "flipGreenChannel": false,
+    "lossy": false
+  },
+  "validations": [
+    {
+      "rule": "powerOfTwo",
+      "condition": "貼圖寬度與高度必須為 2 的冪次（如 256, 512, 1024, 2048, 4096）",
+      "severity": "error"
+    },
+    {
+      "rule": "notSRGB",
+      "condition": "法線貼圖不應啟用 sRGB，否則會導致法線計算錯誤",
+      "severity": "error"
+    },
+    {
+      "rule": "maxResolution",
+      "condition": "法線貼圖解析度不應超過 4096x4096",
+      "severity": "warning"
+    },
+    {
+      "rule": "compressionType",
+      "condition": "法線貼圖必須使用 TC_Normalmap 壓縮以保持精度",
+      "severity": "error"
+    }
+  ],
+  "requirements": [
+    {
+      "check": "fileFormat",
+      "description": "支援的檔案格式為 PNG、TGA、EXR",
+      "required": true
+    },
+    {
+      "check": "linearColorSpace",
+      "description": "法線貼圖必須使用線性色彩空間（sRGB 關閉）",
+      "required": true
+    },
+    {
+      "check": "tangentSpaceNormal",
+      "description": "預設使用切線空間法線，如需物件空間法線請另行設定",
+      "required": false
+    }
+  ]
+}

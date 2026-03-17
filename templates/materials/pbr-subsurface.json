@@ -1,0 +1,214 @@
+{
+  "name": "M_PBR_Subsurface",
+  "description": "次表面散射材質範本，使用 SubsurfaceProfile 著色模型。適用於皮膚、蠟燭、樹葉等需要光線穿透效果的表面，支援次表面顏色與散射強度控制。",
+  "shadingModel": "SubsurfaceProfile",
+  "blendMode": "Opaque",
+  "materialDomain": "Surface",
+  "twoSided": false,
+  "parameters": [
+    {
+      "name": "BaseColor",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "description": "基礎顏色貼圖（sRGB），定義表面的漫反射顏色"
+    },
+    {
+      "name": "Normal",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "samplerType": "Normal",
+      "description": "法線貼圖（Linear），用於模擬表面微細節"
+    },
+    {
+      "name": "SubsurfaceColor",
+      "type": "LinearColor",
+      "default": [0.8, 0.2, 0.1, 1.0],
+      "group": "Subsurface",
+      "description": "次表面散射顏色，定義光線穿透表面後的色調（皮膚通常為暖紅色）"
+    },
+    {
+      "name": "Opacity",
+      "type": "Scalar",
+      "default": 1.0,
+      "range": [0.0, 1.0],
+      "group": "Subsurface",
+      "description": "次表面散射不透明度，控制光線穿透的程度（0=完全穿透, 1=不穿透）"
+    },
+    {
+      "name": "Roughness",
+      "type": "Scalar",
+      "default": 0.4,
+      "range": [0.0, 1.0],
+      "group": "Surface",
+      "description": "表面粗糙度，皮膚通常在 0.3-0.5 之間"
+    },
+    {
+      "name": "RoughnessMap",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "samplerType": "Masks",
+      "description": "粗糙度貼圖（Linear），用於定義表面不同區域的粗糙度變化"
+    },
+    {
+      "name": "SubsurfaceProfileAsset",
+      "type": "SubsurfaceProfile",
+      "default": null,
+      "group": "Subsurface",
+      "description": "次表面散射設定檔資產，定義散射半徑與衰減曲線"
+    },
+    {
+      "name": "DetailNormal",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "samplerType": "Normal",
+      "description": "細節法線貼圖，用於疊加毛孔或微表面細節"
+    },
+    {
+      "name": "DetailNormalTiling",
+      "type": "Vector2D",
+      "default": [10.0, 10.0],
+      "group": "UV",
+      "description": "細節法線的 UV 平鋪倍數，通常需要較高的平鋪值"
+    },
+    {
+      "name": "DetailNormalIntensity",
+      "type": "Scalar",
+      "default": 0.5,
+      "range": [0.0, 1.0],
+      "group": "Adjustments",
+      "description": "細節法線強度，控制微表面細節的明顯程度"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "TexCoord",
+      "type": "TextureCoordinate",
+      "description": "主 UV 座標節點",
+      "properties": {
+        "coordinateIndex": 0
+      }
+    },
+    {
+      "id": "DetailTexCoord",
+      "type": "TextureCoordinate",
+      "description": "細節法線的 UV 座標，使用較高的平鋪值",
+      "properties": {
+        "coordinateIndex": 0,
+        "uTiling": "DetailNormalTiling.X",
+        "vTiling": "DetailNormalTiling.Y"
+      }
+    },
+    {
+      "id": "BaseColorSample",
+      "type": "TextureSample",
+      "description": "取樣基礎顏色貼圖",
+      "properties": {
+        "texture": "BaseColor",
+        "samplerType": "Color"
+      },
+      "inputs": {
+        "UVs": "TexCoord.Output"
+      },
+      "connection": {
+        "target": "Material.BaseColor"
+      }
+    },
+    {
+      "id": "NormalSample",
+      "type": "TextureSample",
+      "description": "取樣主法線貼圖",
+      "properties": {
+        "texture": "Normal",
+        "samplerType": "Normal"
+      },
+      "inputs": {
+        "UVs": "TexCoord.Output"
+      }
+    },
+    {
+      "id": "DetailNormalSample",
+      "type": "TextureSample",
+      "description": "取樣細節法線貼圖（毛孔/微表面）",
+      "properties": {
+        "texture": "DetailNormal",
+        "samplerType": "Normal"
+      },
+      "inputs": {
+        "UVs": "DetailTexCoord.Output"
+      }
+    },
+    {
+      "id": "DetailNormalLerp",
+      "type": "Lerp",
+      "description": "根據 DetailNormalIntensity 混合細節法線",
+      "inputs": {
+        "A": [0.0, 0.0, 1.0],
+        "B": "DetailNormalSample.RGB",
+        "Alpha": "DetailNormalIntensity"
+      }
+    },
+    {
+      "id": "BlendNormals",
+      "type": "BlendAngleCorrectedNormals",
+      "description": "將主法線與細節法線混合（角度校正混合）",
+      "inputs": {
+        "BaseNormal": "NormalSample.RGB",
+        "AdditionalNormal": "DetailNormalLerp.Output"
+      },
+      "connection": {
+        "target": "Material.Normal"
+      }
+    },
+    {
+      "id": "RoughnessMapSample",
+      "type": "TextureSample",
+      "description": "取樣粗糙度貼圖",
+      "properties": {
+        "texture": "RoughnessMap",
+        "samplerType": "Masks"
+      },
+      "inputs": {
+        "UVs": "TexCoord.Output"
+      }
+    },
+    {
+      "id": "RoughnessLerp",
+      "type": "Lerp",
+      "description": "在預設粗糙度與貼圖粗糙度之間混合",
+      "inputs": {
+        "A": "Roughness",
+        "B": "RoughnessMapSample.R",
+        "Alpha": "RoughnessMapSample.A"
+      },
+      "connection": {
+        "target": "Material.Roughness"
+      }
+    },
+    {
+      "id": "SubsurfaceColorNode",
+      "type": "VectorParameter",
+      "description": "次表面散射顏色參數",
+      "properties": {
+        "parameter": "SubsurfaceColor"
+      },
+      "connection": {
+        "target": "Material.SubsurfaceColor"
+      }
+    },
+    {
+      "id": "OpacityNode",
+      "type": "ScalarParameter",
+      "description": "次表面不透明度參數",
+      "properties": {
+        "parameter": "Opacity"
+      },
+      "connection": {
+        "target": "Material.Opacity"
+      }
+    }
+  ]
+}

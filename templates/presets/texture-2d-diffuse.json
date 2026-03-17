@@ -1,0 +1,53 @@
+{
+  "name": "Texture2D_Diffuse",
+  "assetType": "Texture2D",
+  "description": "標準 Diffuse/Albedo 貼圖預設，適用於 PBR 材質的基礎顏色貼圖",
+  "settings": {
+    "compressionSettings": "TC_Default",
+    "mipmapGenSettings": "TMGS_FromTextureGroup",
+    "textureGroup": "TEXTUREGROUP_World",
+    "sRGB": true,
+    "maxTextureSize": 4096,
+    "lodBias": 0,
+    "neverStream": false,
+    "virtualTextureStreaming": false,
+    "filter": "TF_Default",
+    "addressX": "TA_Wrap",
+    "addressY": "TA_Wrap",
+    "lossy": false
+  },
+  "validations": [
+    {
+      "rule": "powerOfTwo",
+      "condition": "貼圖寬度與高度必須為 2 的冪次（如 256, 512, 1024, 2048, 4096）",
+      "severity": "error"
+    },
+    {
+      "rule": "maxResolution",
+      "condition": "貼圖解析度不應超過 4096x4096，以避免記憶體過度使用",
+      "severity": "warning"
+    },
+    {
+      "rule": "squareAspect",
+      "condition": "建議使用正方形貼圖以獲得最佳 Mipmap 效果",
+      "severity": "info"
+    }
+  ],
+  "requirements": [
+    {
+      "check": "fileFormat",
+      "description": "支援的檔案格式為 PNG、TGA、EXR、HDR",
+      "required": true
+    },
+    {
+      "check": "colorSpace",
+      "description": "Diffuse 貼圖必須使用 sRGB 色彩空間",
+      "required": true
+    },
+    {
+      "check": "streamingEnabled",
+      "description": "建議啟用 Texture Streaming 以最佳化記憶體使用",
+      "required": false
+    }
+  ]
+}

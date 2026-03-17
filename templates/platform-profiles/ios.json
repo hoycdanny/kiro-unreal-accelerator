@@ -1,0 +1,84 @@
+{
+  "name": "iOS",
+  "platform": "iOS",
+  "description": "iOS 平台設定檔，使用 Metal API 與行動 Shader Model，低記憶體預算，不支援 Nanite 與 Lumen",
+  "targetRHI": "Metal",
+  "shaderFormats": ["SF_METAL_SM5", "SF_METAL_MACES3_1"],
+  "shaderModel": "SM5_Metal",
+  "featureLevel": "ES3_1",
+  "rendering": {
+    "naniteSupported": false,
+    "lumenSupported": false,
+    "virtualShadowMapsSupported": false,
+    "rayTracingSupported": false,
+    "hardwareRayTracing": false,
+    "meshShadersSupported": false,
+    "variableRateShadingSupported": false,
+    "mobileHDR": true,
+    "mobileMultiView": false,
+    "forwardShading": true,
+    "deferredShading": false
+  },
+  "memory": {
+    "totalBudgetMB": 2048,
+    "textureBudgetMB": 512,
+    "meshBudgetMB": 256,
+    "audioBudgetMB": 128,
+    "videoMemoryBudgetMB": 1024,
+    "textureStreamingPoolMB": 384,
+    "warningThresholdMB": 1536
+  },
+  "scalability": {
+    "viewDistanceQuality": 1,
+    "antiAliasingQuality": 1,
+    "shadowQuality": 1,
+    "globalIlluminationQuality": 0,
+    "reflectionQuality": 1,
+    "postProcessQuality": 1,
+    "textureQuality": 1,
+    "effectsQuality": 1,
+    "foliageQuality": 1,
+    "shadingQuality": 1
+  },
+  "textureSettings": {
+    "maxTextureSize": 1024,
+    "useASTC": true,
+    "usePVRTC": false,
+    "textureCompression": "ASTC",
+    "mipmapBias": 1
+  },
+  "input": {
+    "supportedDevices": ["TouchScreen", "Gamepad"],
+    "multiTouchSupported": true,
+    "accelerometerSupported": true,
+    "gyroscopeSupported": true,
+    "hapticFeedback": true
+  },
+  "packaging": {
+    "targetArchitecture": "arm64",
+    "minimumOSVersion": "15.0",
+    "supportedDevices": ["iPhone", "iPad"],
+    "bitcode": false,
+    "appThinning": true,
+    "onDemandResources": true,
+    "maxIPASizeMB": 4000
+  },
+  "thermalManagement": {
+    "thermalThrottlingAware": true,
+    "dynamicResolutionEnabled": true,
+    "targetFrameRate": 60,
+    "minFrameRate": 30,
+    "adaptivePerformance": true
+  },
+  "notes": {
+    "recommendations": [
+      "使用 Forward Shading 取代 Deferred Shading 以節省記憶體",
+      "限制貼圖最大尺寸為 1024x1024 以控制記憶體使用",
+      "使用 ASTC 壓縮格式取代 PVRTC 以獲得更好的品質與壓縮率",
+      "啟用 Dynamic Resolution 應對熱節流降頻",
+      "使用 On-Demand Resources 減少初始下載大小",
+      "注意 Metal API 的 Shader 編譯限制",
+      "確保符合 Apple App Store 審核規範"
+    ]
+  }
+}

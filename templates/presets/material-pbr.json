@@ -1,0 +1,88 @@
+{
+  "name": "Material_PBR",
+  "assetType": "Material",
+  "description": "標準 PBR 材質預設，使用 DefaultLit 著色模型與 Opaque 混合模式，適用於大多數不透明表面",
+  "settings": {
+    "shadingModel": "DefaultLit",
+    "blendMode": "Opaque",
+    "materialDomain": "Surface",
+    "twoSided": false,
+    "ditheredLODTransition": true,
+    "fullyRough": false,
+    "useAlphaTest": false,
+    "naniteOverrideMaterial": false,
+    "parameters": {
+      "BaseColor": {
+        "type": "Texture2D",
+        "default": null,
+        "description": "基礎顏色貼圖（sRGB）"
+      },
+      "Normal": {
+        "type": "Texture2D",
+        "default": null,
+        "description": "法線貼圖（Linear）"
+      },
+      "ORM": {
+        "type": "Texture2D",
+        "default": null,
+        "description": "ORM 合併貼圖（Occlusion/Roughness/Metallic，Linear）"
+      },
+      "Tint": {
+        "type": "LinearColor",
+        "default": [1.0, 1.0, 1.0, 1.0],
+        "description": "顏色色調乘數"
+      },
+      "RoughnessMultiplier": {
+        "type": "Scalar",
+        "default": 1.0,
+        "range": [0.0, 1.0],
+        "description": "粗糙度乘數"
+      },
+      "MetallicMultiplier": {
+        "type": "Scalar",
+        "default": 1.0,
+        "range": [0.0, 1.0],
+        "description": "金屬度乘數"
+      },
+      "UVTiling": {
+        "type": "Vector2D",
+        "default": [1.0, 1.0],
+        "description": "UV 平鋪倍數"
+      }
+    }
+  },
+  "validations": [
+    {
+      "rule": "shaderComplexity",
+      "condition": "材質 Shader 指令數建議不超過 200，以維持良好的 GPU 效能",
+      "severity": "warning"
+    },
+    {
+      "rule": "textureSampleCount",
+      "condition": "單一材質的貼圖取樣數建議不超過 16，過多取樣會影響效能",
+      "severity": "warning"
+    },
+    {
+      "rule": "naniteCompatible",
+      "condition": "若用於 Nanite 網格，材質必須使用 Opaque 或 Masked 混合模式",
+      "severity": "error"
+    }
+  ],
+  "requirements": [
+    {
+      "check": "validShadingModel",
+      "description": "著色模型必須為 UE5 支援的有效模型（DefaultLit、Unlit、Subsurface 等）",
+      "required": true
+    },
+    {
+      "check": "baseColorTexture",
+      "description": "建議提供 BaseColor 貼圖或設定預設顏色值",
+      "required": false
+    },
+    {
+      "check": "normalMapFormat",
+      "description": "法線貼圖必須使用 TC_Normalmap 壓縮且關閉 sRGB",
+      "required": false
+    }
+  ]
+}

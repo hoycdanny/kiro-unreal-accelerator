@@ -1,0 +1,215 @@
+{
+  "name": "UE5_NamingConventions",
+  "description": "Unreal Engine 5 資產與程式碼命名規範，定義前綴、後綴與命名模式，確保專案一致性",
+  "version": "1.0",
+  "assetPrefixes": {
+    "Blueprint": {
+      "prefix": "BP_",
+      "description": "Blueprint 類別",
+      "examples": ["BP_Character_Player", "BP_Weapon_Rifle", "BP_Pickup_Health"]
+    },
+    "WidgetBlueprint": {
+      "prefix": "WBP_",
+      "description": "Widget Blueprint（UI）",
+      "examples": ["WBP_HUD_Main", "WBP_Menu_Pause", "WBP_Dialog_Confirm"]
+    },
+    "Material": {
+      "prefix": "M_",
+      "description": "材質",
+      "examples": ["M_Rock_Granite", "M_Metal_Rusty", "M_Glass_Frosted"]
+    },
+    "MaterialInstance": {
+      "prefix": "MI_",
+      "description": "材質實例",
+      "examples": ["MI_Rock_Granite_Dark", "MI_Metal_Rusty_Red"]
+    },
+    "MaterialFunction": {
+      "prefix": "MF_",
+      "description": "材質函數",
+      "examples": ["MF_BlendByHeight", "MF_WindAnimation"]
+    },
+    "Texture": {
+      "prefix": "T_",
+      "description": "貼圖",
+      "examples": ["T_Rock_Granite_D", "T_Rock_Granite_N", "T_Rock_Granite_ORM"]
+    },
+    "StaticMesh": {
+      "prefix": "SM_",
+      "description": "靜態網格",
+      "examples": ["SM_Rock_Large", "SM_Wall_Brick_4m", "SM_Prop_Chair"]
+    },
+    "SkeletalMesh": {
+      "prefix": "SK_",
+      "description": "骨骼網格",
+      "examples": ["SK_Character_Player", "SK_Weapon_Rifle", "SK_Creature_Dragon"]
+    },
+    "AnimSequence": {
+      "prefix": "AS_",
+      "description": "動畫序列",
+      "examples": ["AS_Character_Idle", "AS_Character_Run", "AS_Character_Jump"]
+    },
+    "AnimMontage": {
+      "prefix": "AM_",
+      "description": "動畫蒙太奇",
+      "examples": ["AM_Attack_Melee_01", "AM_Reload_Rifle", "AM_Death_Forward"]
+    },
+    "AnimBlueprint": {
+      "prefix": "ABP_",
+      "description": "動畫藍圖",
+      "examples": ["ABP_Character_Player", "ABP_Creature_Dragon"]
+    },
+    "BlendSpace": {
+      "prefix": "BS_",
+      "description": "混合空間",
+      "examples": ["BS_Locomotion", "BS_AimOffset"]
+    },
+    "ParticleSystem": {
+      "prefix": "PS_",
+      "description": "粒子系統（Cascade）",
+      "examples": ["PS_Fire_Torch", "PS_Explosion_Small"]
+    },
+    "NiagaraSystem": {
+      "prefix": "NS_",
+      "description": "Niagara 粒子系統",
+      "examples": ["NS_Fire_Torch", "NS_Rain_Heavy", "NS_Magic_Heal"]
+    },
+    "NiagaraEmitter": {
+      "prefix": "NE_",
+      "description": "Niagara 發射器",
+      "examples": ["NE_Sparks", "NE_Smoke_Trail"]
+    },
+    "SoundWave": {
+      "prefix": "SW_",
+      "description": "音訊波形",
+      "examples": ["SW_Footstep_Concrete", "SW_Explosion_Large"]
+    },
+    "SoundCue": {
+      "prefix": "SC_",
+      "description": "音訊提示",
+      "examples": ["SC_Footstep_Concrete", "SC_Ambient_Forest"]
+    },
+    "PhysicsAsset": {
+      "prefix": "PA_",
+      "description": "物理資產",
+      "examples": ["PA_Character_Player", "PA_Ragdoll_Enemy"]
+    },
+    "BehaviorTree": {
+      "prefix": "BT_",
+      "description": "行為樹",
+      "examples": ["BT_AI_Patrol", "BT_AI_Combat"]
+    },
+    "BlackboardData": {
+      "prefix": "BB_",
+      "description": "黑板資料",
+      "examples": ["BB_NPC_Standard", "BB_Boss_Advanced"]
+    },
+    "DataTable": {
+      "prefix": "DT_",
+      "description": "資料表",
+      "examples": ["DT_Weapons", "DT_Items", "DT_Enemies"]
+    },
+    "DataAsset": {
+      "prefix": "DA_",
+      "description": "資料資產",
+      "examples": ["DA_AbilitySet_Warrior", "DA_InputConfig_Default"]
+    },
+    "Enum": {
+      "prefix": "E",
+      "description": "列舉（C++ 命名，無底線）",
+      "examples": ["EWeaponType", "ECharacterState", "EDamageType"]
+    },
+    "Interface": {
+      "prefix": "I",
+      "description": "介面（C++ 命名，無底線）",
+      "examples": ["IInteractable", "IDamageable", "IPickupable"]
+    },
+    "GameplayAbility": {
+      "prefix": "GA_",
+      "description": "Gameplay Ability",
+      "examples": ["GA_Melee_Slash", "GA_Ranged_Fireball", "GA_Buff_Shield"]
+    },
+    "GameplayEffect": {
+      "prefix": "GE_",
+      "description": "Gameplay Effect",
+      "examples": ["GE_Damage_Fire", "GE_Buff_SpeedBoost", "GE_Debuff_Poison"]
+    },
+    "GameplayCue": {
+      "prefix": "GC_",
+      "description": "Gameplay Cue",
+      "examples": ["GC_Impact_Melee", "GC_Heal_Burst"]
+    }
+  },
+  "textureSuffixes": {
+    "_D": "Diffuse / Base Color",
+    "_N": "Normal Map",
+    "_ORM": "Occlusion / Roughness / Metallic (packed)",
+    "_E": "Emissive",
+    "_M": "Mask",
+    "_A": "Alpha / Opacity",
+    "_H": "Height / Displacement",
+    "_AO": "Ambient Occlusion (standalone)",
+    "_F": "Flow Map"
+  },
+  "cppNaming": {
+    "classes": {
+      "pattern": "[Prefix][Name]",
+      "prefixes": {
+        "A": "Actor 衍生類別",
+        "U": "UObject 衍生類別",
+        "F": "結構體與非 UObject 類別",
+        "T": "範本類別",
+        "S": "Slate Widget 類別",
+        "E": "列舉",
+        "I": "介面"
+      },
+      "examples": ["AMyCharacter", "UHealthComponent", "FWeaponData", "EWeaponType"]
+    },
+    "variables": {
+      "boolPrefix": "b",
+      "pointerPrefix": "",
+      "camelCase": true,
+      "examples": ["bIsAlive", "CurrentHealth", "OwningActor", "MaxAmmoCount"]
+    },
+    "functions": {
+      "camelCase": true,
+      "getterPrefix": "Get",
+      "setterPrefix": "Set",
+      "boolGetterPrefix": "Is",
+      "examples": ["GetHealth()", "SetMaxHealth()", "IsAlive()", "CanAttack()"]
+    }
+  },
+  "folderNaming": {
+    "pattern": "PascalCase",
+    "noSpaces": true,
+    "noSpecialCharacters": true,
+    "examples": ["Characters", "Weapons", "Environment", "UI", "VFX"]
+  },
+  "validationRules": [
+    {
+      "rule": "prefixRequired",
+      "description": "所有資產必須使用對應類型的前綴",
+      "severity": "warning"
+    },
+    {
+      "rule": "noSpacesInNames",
+      "description": "資產名稱不得包含空格，使用底線分隔",
+      "severity": "error"
+    },
+    {
+      "rule": "pascalCaseAfterPrefix",
+      "description": "前綴後的名稱使用 PascalCase",
+      "severity": "warning"
+    },
+    {
+      "rule": "textureSuffixRequired",
+      "description": "貼圖資產必須使用對應用途的後綴",
+      "severity": "warning"
+    },
+    {
+      "rule": "maxNameLength",
+      "value": 64,
+      "description": "資產名稱不得超過 64 字元以避免路徑過長問題",
+      "severity": "warning"
+    }
+  ]
+}

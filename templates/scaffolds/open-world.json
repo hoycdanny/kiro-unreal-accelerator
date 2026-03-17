@@ -1,0 +1,97 @@
+{
+  "name": "OpenWorld",
+  "description": "開放世界關卡腳手架，適用於大型開放世界遊戲。啟用 World Partition 進行串流管理，包含完整的天空與大氣系統、全域後處理與導航網格。",
+  "levelType": "OpenWorld",
+  "worldPartition": {
+    "enabled": true,
+    "gridSize": 12800,
+    "loadingRange": 25600
+  },
+  "dataLayers": [
+    {
+      "name": "Gameplay",
+      "type": "Runtime",
+      "initialState": "Activated",
+      "description": "遊戲邏輯相關 Actor，包含觸發器、互動物件、任務目標等"
+    },
+    {
+      "name": "Audio",
+      "type": "Runtime",
+      "initialState": "Activated",
+      "description": "音訊相關 Actor，包含環境音效、音樂觸發區域等"
+    },
+    {
+      "name": "Lighting",
+      "type": "Runtime",
+      "initialState": "Activated",
+      "description": "光照相關 Actor，包含點光源、聚光燈、反射捕捉等"
+    },
+    {
+      "name": "Streaming",
+      "type": "Runtime",
+      "initialState": "Activated",
+      "description": "串流控制層，管理遠距離 LOD 與串流載入邏輯"
+    }
+  ],
+  "actors": [
+    {
+      "class": "DirectionalLight",
+      "name": "SunLight",
+      "mobility": "Stationary",
+      "properties": {
+        "intensity": 10.0,
+        "lightColor": [255, 243, 216],
+        "useAtmosphereSunLight": true,
+        "castShadows": true
+      }
+    },
+    {
+      "class": "SkyLight",
+      "name": "SkyLight",
+      "mobility": "Stationary",
+      "properties": {
+        "intensity": 1.0,
+        "realTimeCaptureEnabled": true
+      }
+    },
+    {
+      "class": "SkyAtmosphere",
+      "name": "SkyAtmosphere",
+      "properties": {}
+    },
+    {
+      "class": "ExponentialHeightFog",
+      "name": "HeightFog",
+      "properties": {
+        "fogDensity": 0.02,
+        "fogHeightFalloff": 0.2,
+        "volumetricFog": true
+      }
+    },
+    {
+      "class": "PostProcessVolume",
+      "name": "GlobalPostProcess",
+      "properties": {
+        "infinite": true,
+        "priority": 0,
+        "blendWeight": 1.0,
+        "autoExposureEnabled": true,
+        "bloomEnabled": true
+      }
+    },
+    {
+      "class": "NavMeshBoundsVolume",
+      "name": "NavMeshBounds",
+      "properties": {
+        "extent": { "x": 25600, "y": 25600, "z": 2000 }
+      }
+    }
+  ],
+  "folders": [
+    "Environment",
+    "Lighting",
+    "Audio",
+    "Gameplay",
+    "VFX"
+  ]
+}

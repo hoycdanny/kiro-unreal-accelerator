@@ -1,0 +1,103 @@
+{
+  "id": "performance-audit",
+  "name": "Performance Audit",
+  "description": "效能審計工作流，自動化場景分析、Draw Call 剖析、記憶體剖析、Nanite/Lumen 分析、反模式偵測與報告產出的完整流程。適用於效能最佳化階段或里程碑前的效能驗證。",
+  "steps": [
+    {
+      "id": "scene-analysis",
+      "name": "場景效能分析",
+      "action": "PerformanceAnalyzer.analyzeScene",
+      "params": {
+        "includeDrawCalls": true,
+        "includeMemory": true,
+        "includeGpu": true
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "draw-call-profiling",
+      "name": "Draw Call 剖析",
+      "action": "PerformanceAnalyzer.profileDrawCalls",
+      "params": {
+        "threshold": 3000,
+        "groupByMaterial": true
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "memory-profiling",
+      "name": "記憶體剖析",
+      "action": "PerformanceAnalyzer.profileMemory",
+      "params": {
+        "includeTextures": true,
+        "includeMeshes": true,
+        "includeAudio": true
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "nanite-analysis",
+      "name": "Nanite 使用分析",
+      "action": "PerformanceAnalyzer.analyzeNaniteUsage",
+      "params": {
+        "checkTriangleBudget": true,
+        "checkFallbackMeshes": true
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "lumen-analysis",
+      "name": "Lumen 設定分析",
+      "action": "PerformanceAnalyzer.analyzeLumenSettings",
+      "params": {
+        "checkGlobalIllumination": true,
+        "checkReflections": true,
+        "checkHardwareRayTracing": true
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "anti-pattern-detection",
+      "name": "效能反模式偵測",
+      "action": "PerformanceAnalyzer.detectAntiPatterns",
+      "params": {
+        "patterns": [
+          "tooManyDynamicLights",
+          "unmergedMeshes",
+          "oversizedTextures",
+          "highMaterialComplexity",
+          "excessiveTickUpdates"
+        ]
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "dependency-check",
+      "name": "資產依賴檢查",
+      "action": "DependencyAnalyzer.findOrphanedAssets",
+      "params": {
+        "includeChunkAnalysis": true
+      },
+      "condition": {
+        "field": "summary.overallRating",
+        "operator": "lt",
+        "value": 70
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "generate-performance-report",
+      "name": "產出效能審計報告",
+      "action": "ReportGenerator.generatePerformanceReport",
+      "params": {
+        "format": "markdown",
+        "includeCharts": true,
+        "includeRecommendations": true,
+        "prioritizeByImpact": true
+      },
+      "onFailure": "retry",
+      "retryCount": 2
+    }
+  ],
+  "schedule": "0 2 * * 1"
+}

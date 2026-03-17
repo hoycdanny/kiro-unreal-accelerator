@@ -1,0 +1,66 @@
+{
+  "name": "LinearLevel",
+  "description": "線性/走廊關卡腳手架，適用於線性流程的關卡設計。較小的關卡規模可選擇不啟用 World Partition，包含玩家起始點、基礎光照與阻擋體積。",
+  "levelType": "Linear",
+  "worldPartition": {
+    "enabled": false,
+    "gridSize": 6400,
+    "loadingRange": 12800
+  },
+  "dataLayers": [],
+  "actors": [
+    {
+      "class": "PlayerStart",
+      "name": "PlayerStart_0",
+      "properties": {
+        "location": { "x": 0, "y": 0, "z": 100 },
+        "rotation": { "pitch": 0, "yaw": 0, "roll": 0 }
+      }
+    },
+    {
+      "class": "DirectionalLight",
+      "name": "MainLight",
+      "mobility": "Stationary",
+      "properties": {
+        "intensity": 8.0,
+        "lightColor": [255, 248, 230],
+        "castShadows": true
+      }
+    },
+    {
+      "class": "SkyLight",
+      "name": "SkyLight",
+      "mobility": "Stationary",
+      "properties": {
+        "intensity": 1.0,
+        "realTimeCaptureEnabled": false
+      }
+    },
+    {
+      "class": "PostProcessVolume",
+      "name": "GlobalPostProcess",
+      "properties": {
+        "infinite": true,
+        "priority": 0,
+        "blendWeight": 1.0,
+        "autoExposureEnabled": true,
+        "bloomEnabled": true
+      }
+    },
+    {
+      "class": "BlockingVolume",
+      "name": "LevelBounds",
+      "properties": {
+        "extent": { "x": 5000, "y": 2000, "z": 1500 },
+        "description": "防止玩家離開關卡邊界的阻擋體積"
+      }
+    }
+  ],
+  "folders": [
+    "Geometry",
+    "Lighting",
+    "Gameplay",
+    "Audio",
+    "VFX"
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "name": "WBP_HUD",
+  "description": "HUD Widget Blueprint 範本，提供標準的遊戲抬頭顯示介面。包含生命值條、彈藥計數器、準心與小地圖等常見 HUD 元素，支援事件驅動更新以最佳化效能。",
+  "parentClass": "/Script/UMG.UserWidget",
+  "components": [
+    {
+      "name": "RootCanvas",
+      "class": "CanvasPanel",
+      "attachTo": null,
+      "isRoot": true,
+      "properties": {
+        "visibility": "SelfHitTestInvisible"
+      }
+    },
+    {
+      "name": "HealthBar",
+      "class": "ProgressBar",
+      "attachTo": "RootCanvas",
+      "properties": {
+        "anchor": { "min": { "x": 0.0, "y": 1.0 }, "max": { "x": 0.0, "y": 1.0 } },
+        "position": { "x": 40, "y": -60 },
+        "size": { "x": 250, "y": 24 },
+        "alignment": { "x": 0.0, "y": 1.0 },
+        "percent": 1.0,
+        "fillColorAndOpacity": { "r": 0.2, "g": 0.8, "b": 0.2, "a": 1.0 },
+        "barFillType": "LeftToRight"
+      }
+    },
+    {
+      "name": "AmmoCounter",
+      "class": "TextBlock",
+      "attachTo": "RootCanvas",
+      "properties": {
+        "anchor": { "min": { "x": 1.0, "y": 1.0 }, "max": { "x": 1.0, "y": 1.0 } },
+        "position": { "x": -60, "y": -60 },
+        "alignment": { "x": 1.0, "y": 1.0 },
+        "text": "30 / 120",
+        "font": {
+          "size": 24,
+          "typefaceFontName": "Bold"
+        },
+        "colorAndOpacity": { "r": 1.0, "g": 1.0, "b": 1.0, "a": 1.0 },
+        "shadowOffset": { "x": 1.0, "y": 1.0 },
+        "shadowColorAndOpacity": { "r": 0, "g": 0, "b": 0, "a": 0.6 }
+      }
+    },
+    {
+      "name": "Crosshair",
+      "class": "Image",
+      "attachTo": "RootCanvas",
+      "properties": {
+        "anchor": { "min": { "x": 0.5, "y": 0.5 }, "max": { "x": 0.5, "y": 0.5 } },
+        "position": { "x": 0, "y": 0 },
+        "size": { "x": 32, "y": 32 },
+        "alignment": { "x": 0.5, "y": 0.5 },
+        "colorAndOpacity": { "r": 1.0, "g": 1.0, "b": 1.0, "a": 0.8 },
+        "renderTransformPivot": { "x": 0.5, "y": 0.5 }
+      }
+    },
+    {
+      "name": "Minimap",
+      "class": "Image",
+      "attachTo": "RootCanvas",
+      "properties": {
+        "anchor": { "min": { "x": 1.0, "y": 0.0 }, "max": { "x": 1.0, "y": 0.0 } },
+        "position": { "x": -20, "y": 20 },
+        "size": { "x": 200, "y": 200 },
+        "alignment": { "x": 1.0, "y": 0.0 },
+        "colorAndOpacity": { "r": 1.0, "g": 1.0, "b": 1.0, "a": 0.9 },
+        "clipping": "ClipToBounds"
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "PlayerControllerRef",
+      "type": "PlayerController",
+      "default": null,
+      "category": "References",
+      "replication": "None",
+      "description": "擁有此 HUD 的 PlayerController 參照"
+    },
+    {
+      "name": "bIsVisible",
+      "type": "bool",
+      "default": true,
+      "category": "Display",
+      "replication": "None",
+      "description": "HUD 是否可見"
+    }
+  ],
+  "functions": [
+    {
+      "name": "UpdateHealth",
+      "category": "HUD",
+      "description": "更新生命值條顯示，根據百分比調整填充量與顏色",
+      "inputs": [
+        { "name": "CurrentHealth", "type": "float" },
+        { "name": "MaxHealth", "type": "float" }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "UpdateAmmo",
+      "category": "HUD",
+      "description": "更新彈藥計數器顯示，格式為 '當前 / 備用'",
+      "inputs": [
+        { "name": "CurrentAmmo", "type": "int32" },
+        { "name": "ReserveAmmo", "type": "int32" }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "ShowDamageIndicator",
+      "category": "HUD",
+      "description": "顯示受擊方向指示器，短暫顯示後自動淡出",
+      "inputs": [
+        { "name": "DamageDirection", "type": "Vector" },
+        { "name": "DamageAmount", "type": "float" }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "ToggleVisibility",
+      "category": "HUD",
+      "description": "切換 HUD 的顯示/隱藏狀態",
+      "inputs": [],
+      "outputs": []
+    }
+  ],
+  "events": [
+    {
+      "name": "OnHealthUpdated",
+      "category": "HUD",
+      "description": "當生命值 UI 更新完成時觸發",
+      "parameters": [
+        { "name": "HealthPercent", "type": "float" }
+      ]
+    },
+    {
+      "name": "OnAmmoUpdated",
+      "category": "HUD",
+      "description": "當彈藥 UI 更新完成時觸發",
+      "parameters": [
+        { "name": "CurrentAmmo", "type": "int32" },
+        { "name": "ReserveAmmo", "type": "int32" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,267 @@
+{
+  "name": "M_VFX_Translucent",
+  "description": "VFX 半透明材質範本，使用 Unlit 著色模型與 Translucent 混合模式。適用於粒子特效、光束、煙霧等視覺效果，支援 Panner UV 動畫、自發光與粒子顏色整合。",
+  "shadingModel": "Unlit",
+  "blendMode": "Translucent",
+  "materialDomain": "Surface",
+  "twoSided": true,
+  "parameters": [
+    {
+      "name": "MainTexture",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "description": "主要特效貼圖，通常為灰階遮罩或漸層圖案"
+    },
+    {
+      "name": "DistortionTexture",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "samplerType": "Normal",
+      "description": "扭曲貼圖（可選），用於 UV 扭曲效果"
+    },
+    {
+      "name": "Color",
+      "type": "LinearColor",
+      "default": [1.0, 0.5, 0.1, 1.0],
+      "group": "Appearance",
+      "description": "特效基礎顏色，與粒子顏色相乘"
+    },
+    {
+      "name": "Opacity",
+      "type": "Scalar",
+      "default": 1.0,
+      "range": [0.0, 1.0],
+      "group": "Appearance",
+      "description": "整體不透明度乘數"
+    },
+    {
+      "name": "EmissiveStrength",
+      "type": "Scalar",
+      "default": 5.0,
+      "range": [0.0, 50.0],
+      "group": "Emissive",
+      "description": "自發光強度，控制特效的亮度（HDR 值，可超過 1.0）"
+    },
+    {
+      "name": "PannerSpeedU",
+      "type": "Scalar",
+      "default": 0.2,
+      "range": [-2.0, 2.0],
+      "group": "Animation",
+      "description": "UV Panner U 方向速度"
+    },
+    {
+      "name": "PannerSpeedV",
+      "type": "Scalar",
+      "default": 0.0,
+      "range": [-2.0, 2.0],
+      "group": "Animation",
+      "description": "UV Panner V 方向速度"
+    },
+    {
+      "name": "DistortionStrength",
+      "type": "Scalar",
+      "default": 0.1,
+      "range": [0.0, 1.0],
+      "group": "Distortion",
+      "description": "UV 扭曲強度"
+    },
+    {
+      "name": "DistortionPannerSpeed",
+      "type": "Vector2D",
+      "default": [0.1, 0.05],
+      "group": "Distortion",
+      "description": "扭曲貼圖的 Panner 速度"
+    },
+
+    {
+      "name": "SoftParticleDepthFade",
+      "type": "Scalar",
+      "default": 100.0,
+      "range": [0.0, 1000.0],
+      "group": "Particle",
+      "description": "軟粒子深度淡出距離（單位：Unreal Units），避免粒子與場景幾何體的硬邊"
+    },
+    {
+      "name": "UseParticleColor",
+      "type": "StaticBool",
+      "default": true,
+      "group": "Particle",
+      "description": "是否使用粒子系統傳入的顏色與 Alpha"
+    },
+    {
+      "name": "UVTiling",
+      "type": "Vector2D",
+      "default": [1.0, 1.0],
+      "group": "UV",
+      "description": "UV 平鋪倍數"
+    },
+    {
+      "name": "ErosionAmount",
+      "type": "Scalar",
+      "default": 0.0,
+      "range": [0.0, 1.0],
+      "group": "Erosion",
+      "description": "邊緣侵蝕量，用於粒子消散效果（0=無侵蝕, 1=完全侵蝕）"
+    },
+    {
+      "name": "ErosionSoftness",
+      "type": "Scalar",
+      "default": 0.1,
+      "range": [0.01, 0.5],
+      "group": "Erosion",
+      "description": "侵蝕邊緣的柔和度"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "TexCoord",
+      "type": "TextureCoordinate",
+      "description": "基礎 UV 座標，接收 UVTiling 參數",
+      "properties": {
+        "coordinateIndex": 0,
+        "uTiling": "UVTiling.X",
+        "vTiling": "UVTiling.Y"
+      }
+    },
+    {
+      "id": "DistortionPanner",
+      "type": "Panner",
+      "description": "扭曲貼圖的 UV 動畫",
+      "inputs": {
+        "Coordinate": "TexCoord.Output",
+        "SpeedX": "DistortionPannerSpeed.X",
+        "SpeedY": "DistortionPannerSpeed.Y"
+      }
+    },
+    {
+      "id": "DistortionSample",
+      "type": "TextureSample",
+      "description": "取樣扭曲貼圖",
+      "properties": {
+        "texture": "DistortionTexture",
+        "samplerType": "Normal"
+      },
+      "inputs": {
+        "UVs": "DistortionPanner.Output"
+      }
+    },
+    {
+      "id": "DistortionOffset",
+      "type": "Multiply",
+      "description": "計算 UV 扭曲偏移量",
+      "inputs": {
+        "A": "DistortionSample.RG",
+        "B": "DistortionStrength"
+      }
+    },
+    {
+      "id": "MainPanner",
+      "type": "Panner",
+      "description": "主貼圖的 UV 動畫",
+      "inputs": {
+        "Coordinate": "TexCoord.Output",
+        "SpeedX": "PannerSpeedU",
+        "SpeedY": "PannerSpeedV"
+      }
+    },
+    {
+      "id": "DistortedUV",
+      "type": "Add",
+      "description": "將扭曲偏移加到主 UV 上",
+      "inputs": {
+        "A": "MainPanner.Output",
+        "B": "DistortionOffset.Output"
+      }
+    },
+    {
+      "id": "MainTextureSample",
+      "type": "TextureSample",
+      "description": "取樣主特效貼圖",
+      "properties": {
+        "texture": "MainTexture",
+        "samplerType": "Color"
+      },
+      "inputs": {
+        "UVs": "DistortedUV.Output"
+      }
+    },
+    {
+      "id": "ParticleColor",
+      "type": "ParticleColor",
+      "description": "從粒子系統取得每粒子顏色與 Alpha"
+    },
+    {
+      "id": "ColorMultiply",
+      "type": "Multiply",
+      "description": "將貼圖顏色、材質顏色與粒子顏色相乘",
+      "inputs": {
+        "A": "MainTextureSample.RGB",
+        "B": "Color"
+      }
+    },
+    {
+      "id": "ParticleColorMultiply",
+      "type": "Multiply",
+      "description": "乘以粒子系統顏色（若啟用 UseParticleColor）",
+      "inputs": {
+        "A": "ColorMultiply.Output",
+        "B": "ParticleColor.RGB"
+      }
+    },
+    {
+      "id": "EmissiveMultiply",
+      "type": "Multiply",
+      "description": "將顏色乘以自發光強度產生 HDR 自發光",
+      "inputs": {
+        "A": "ParticleColorMultiply.Output",
+        "B": "EmissiveStrength"
+      },
+      "connection": {
+        "target": "Material.EmissiveColor"
+      }
+    },
+    {
+      "id": "ErosionStep",
+      "type": "SmoothStep",
+      "description": "根據侵蝕量計算 Alpha 遮罩，用於粒子消散效果",
+      "inputs": {
+        "Min": "ErosionAmount",
+        "Max": { "Add": ["ErosionAmount", "ErosionSoftness"] },
+        "Value": "MainTextureSample.A"
+      }
+    },
+    {
+      "id": "OpacityMultiply",
+      "type": "Multiply",
+      "description": "將貼圖 Alpha、侵蝕遮罩與不透明度乘數相乘",
+      "inputs": {
+        "A": "ErosionStep.Output",
+        "B": "Opacity"
+      }
+    },
+    {
+      "id": "ParticleAlphaMultiply",
+      "type": "Multiply",
+      "description": "乘以粒子系統 Alpha",
+      "inputs": {
+        "A": "OpacityMultiply.Output",
+        "B": "ParticleColor.A"
+      }
+    },
+    {
+      "id": "DepthFade",
+      "type": "DepthFade",
+      "description": "軟粒子深度淡出，避免與場景幾何體的硬邊",
+      "inputs": {
+        "Opacity": "ParticleAlphaMultiply.Output",
+        "FadeDistance": "SoftParticleDepthFade"
+      },
+      "connection": {
+        "target": "Material.Opacity"
+      }
+    }
+  ]
+}

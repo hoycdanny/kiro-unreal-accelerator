@@ -1,0 +1,120 @@
+{
+  "name": "GA_Projectile_Fireball",
+  "description": "投射物技能範本（火球術），支援魔力消耗、冷卻與目標追蹤。使用 PlayMontageAndWait 播放施法動畫，在動畫通知時生成投射物 Actor，投射物命中後套用傷害與灼燒 Effect。",
+  "abilityType": "GameplayAbility",
+  "activation": {
+    "policy": "OnInputPressed",
+    "instancingPolicy": "InstancedPerActor"
+  },
+  "tags": {
+    "abilityTags": ["Ability.Magic.Fireball"],
+    "activationBlockedTags": ["State.Dead", "State.Stunned", "State.Silenced"],
+    "cancelAbilitiesWithTag": [],
+    "blockAbilitiesWithTag": [],
+    "activationRequiredTags": []
+  },
+  "cost": {
+    "effectName": "GE_Cost_Fireball",
+    "duration": "Instant",
+    "modifier": {
+      "attribute": "Mana",
+      "operation": "Add",
+      "magnitude": {
+        "type": "ScalableFloat",
+        "value": -30.0
+      }
+    }
+  },
+  "cooldown": {
+    "effectName": "GE_Cooldown_Fireball",
+    "duration": 3.0,
+    "grantedTags": ["Cooldown.Ability.Magic.Fireball"]
+  },
+  "tasks": [
+    {
+      "name": "PlayMontageAndWait",
+      "description": "播放施法動畫蒙太奇，等待完成或中斷",
+      "type": "PlayMontageAndWait",
+      "parameters": {
+        "montageToPlay": null,
+        "rate": 1.0,
+        "startSection": "Cast",
+        "bStopWhenAbilityEnds": true
+      },
+      "callbacks": ["OnCompleted", "OnBlendOut", "OnInterrupted", "OnCancelled"]
+    },
+    {
+      "name": "WaitGameplayEvent_SpawnProjectile",
+      "description": "等待動畫通知觸發的生成事件，在正確時機生成投射物",
+      "type": "WaitGameplayEvent",
+      "parameters": {
+        "eventTag": "Event.Montage.SpawnProjectile",
+        "onlyTriggerOnce": true,
+        "onlyMatchExact": true
+      },
+      "callbacks": ["EventReceived"]
+    }
+  ],
+  "targeting": {
+    "mode": "Directional",
+    "alternativeMode": "SingleTarget",
+    "range": 5000.0,
+    "description": "預設為方向性投射，可切換為單一目標追蹤模式"
+  },
+  "projectile": {
+    "blueprintClass": "BP_Projectile_Fireball",
+    "speed": 3000.0,
+    "lifespan": 5.0,
+    "gravityScale": 0.0,
+    "homing": {
+      "enabled": false,
+      "acceleration": 5000.0,
+      "targetTag": "State.Targetable"
+    },
+    "collision": {
+      "radius": 20.0,
+      "profileName": "Projectile",
+      "ignoreInstigator": true
+    }
+  },
+  "damageEffect": {
+    "effectName": "GE_Damage_Fireball",
+    "description": "火球術直接傷害 Effect",
+    "duration": "Instant",
+    "modifier": {
+      "attribute": "Health",
+      "operation": "Add",
+      "magnitude": {
+        "type": "ScalableFloat",
+        "value": -50.0
+      }
+    },
+    "gameplayCue": "GameplayCue.Damage.Fire"
+  },
+  "additionalEffects": [
+    {
+      "effectName": "GE_DoT_Burning",
+      "description": "灼燒持續傷害 Effect，命中後持續 4 秒造成火焰傷害",
+      "duration": "HasDuration",
+      "durationValue": 4.0,
+      "period": 1.0,
+      "modifier": {
+        "attribute": "Health",
+        "operation": "Add",
+        "magnitude": {
+          "type": "ScalableFloat",
+          "value": -10.0
+        }
+      },
+      "grantedTags": ["State.Burning"],
+      "gameplayCue": "GameplayCue.Damage.Fire"
+    }
+  ],
+  "gameplayCues": [
+    {
+      "tag": "GameplayCue.Damage.Fire",
+      "type": "Static",
+      "description": "火焰命中衝擊特效與音效"
+    }
+  ]
+}

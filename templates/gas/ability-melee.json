@@ -1,0 +1,91 @@
+{
+  "name": "GA_Melee_LightAttack",
+  "description": "近戰輕攻擊技能範本，支援連招系統、體力消耗與冷卻。使用 PlayMontageAndWait 播放攻擊動畫，透過 WaitGameplayEvent 偵測命中事件並套用傷害 Effect。",
+  "abilityType": "GameplayAbility",
+  "activation": {
+    "policy": "OnInputPressed",
+    "instancingPolicy": "InstancedPerActor"
+  },
+  "tags": {
+    "abilityTags": ["Ability.Melee.LightAttack"],
+    "activationBlockedTags": ["State.Dead", "State.Stunned", "State.Silenced"],
+    "cancelAbilitiesWithTag": [],
+    "blockAbilitiesWithTag": ["Ability.Movement.Dash"],
+    "activationRequiredTags": []
+  },
+  "cost": {
+    "effectName": "GE_Cost_MeleeLightAttack",
+    "duration": "Instant",
+    "modifier": {
+      "attribute": "Stamina",
+      "operation": "Add",
+      "magnitude": {
+        "type": "ScalableFloat",
+        "value": -15.0
+      }
+    }
+  },
+  "cooldown": {
+    "effectName": "GE_Cooldown_MeleeLightAttack",
+    "duration": 0.8,
+    "grantedTags": ["Cooldown.Ability.Melee.LightAttack"]
+  },
+  "tasks": [
+    {
+      "name": "PlayMontageAndWait",
+      "description": "播放近戰攻擊動畫蒙太奇，等待完成或中斷",
+      "type": "PlayMontageAndWait",
+      "parameters": {
+        "montageToPlay": null,
+        "rate": 1.0,
+        "startSection": "Default",
+        "bStopWhenAbilityEnds": true
+      },
+      "callbacks": ["OnCompleted", "OnBlendOut", "OnInterrupted", "OnCancelled"]
+    },
+    {
+      "name": "WaitGameplayEvent_Hit",
+      "description": "等待動畫通知觸發的命中事件，用於在正確時機套用傷害",
+      "type": "WaitGameplayEvent",
+      "parameters": {
+        "eventTag": "Event.Montage.AttackHit",
+        "onlyTriggerOnce": false,
+        "onlyMatchExact": true
+      },
+      "callbacks": ["EventReceived"]
+    }
+  ],
+  "combo": {
+    "enabled": true,
+    "maxComboCount": 3,
+    "comboWindowTag": "Event.Montage.ComboWindow",
+    "comboAnimations": [
+      { "index": 0, "section": "Attack1", "description": "第一段橫斬" },
+      { "index": 1, "section": "Attack2", "description": "第二段上挑" },
+      { "index": 2, "section": "Attack3", "description": "第三段重擊" }
+    ],
+    "comboWindowTime": 0.5,
+    "resetOnMiss": true
+  },
+  "damageEffect": {
+    "effectName": "GE_Damage_MeleeLightAttack",
+    "description": "近戰輕攻擊傷害 Effect，使用 SetByCaller 設定傷害值",
+    "duration": "Instant",
+    "modifier": {
+      "attribute": "Health",
+      "operation": "Add",
+      "magnitude": {
+        "type": "SetByCaller",
+        "setByCallerTag": "Damage.Amount"
+      }
+    },
+    "gameplayCue": "GameplayCue.Impact.Metal"
+  },
+  "gameplayCues": [
+    {
+      "tag": "GameplayCue.Impact.Metal",
+      "type": "Static",
+      "description": "命中時的衝擊特效與音效"
+    }
+  ]
+}

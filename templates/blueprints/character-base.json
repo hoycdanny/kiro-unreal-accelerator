@@ -1,0 +1,159 @@
+{
+  "name": "BP_Character_Base",
+  "description": "基礎角色 Blueprint 範本，包含標準第三人稱角色所需的元件、屬性與事件。適用於玩家角色或 NPC 基礎類別，提供生命值系統、移動控制與死亡/重生機制。",
+  "parentClass": "/Script/Engine.Character",
+  "components": [
+    {
+      "name": "CapsuleComponent",
+      "class": "CapsuleComponent",
+      "attachTo": "RootComponent",
+      "isRoot": true,
+      "properties": {
+        "capsuleHalfHeight": 96.0,
+        "capsuleRadius": 42.0,
+        "collisionProfileName": "Pawn"
+      }
+    },
+    {
+      "name": "MeshComponent",
+      "class": "SkeletalMeshComponent",
+      "attachTo": "CapsuleComponent",
+      "properties": {
+        "relativeLocation": { "x": 0, "y": 0, "z": -96.0 },
+        "relativeRotation": { "pitch": 0, "yaw": -90, "roll": 0 },
+        "animationMode": "UseAnimationBlueprint",
+        "castShadow": true
+      }
+    },
+    {
+      "name": "CameraBoom",
+      "class": "SpringArmComponent",
+      "attachTo": "CapsuleComponent",
+      "properties": {
+        "targetArmLength": 300.0,
+        "bUsePawnControlRotation": true,
+        "bDoCollisionTest": true,
+        "socketOffset": { "x": 0, "y": 0, "z": 60.0 },
+        "bEnableCameraLag": true,
+        "cameraLagSpeed": 10.0
+      }
+    },
+    {
+      "name": "FollowCamera",
+      "class": "CameraComponent",
+      "attachTo": "CameraBoom",
+      "properties": {
+        "fieldOfView": 90.0,
+        "bUsePawnControlRotation": false,
+        "postProcessBlendWeight": 0.0
+      }
+    },
+    {
+      "name": "CharacterMovement",
+      "class": "CharacterMovementComponent",
+      "attachTo": "CapsuleComponent",
+      "isDefault": true,
+      "properties": {
+        "maxWalkSpeed": 600.0,
+        "maxWalkSpeedCrouched": 300.0,
+        "jumpZVelocity": 420.0,
+        "airControl": 0.2,
+        "gravityScale": 1.0,
+        "bOrientRotationToMovement": true,
+        "rotationRate": { "pitch": 0, "yaw": 540, "roll": 0 },
+        "bCanCrouch": true,
+        "crouchedHalfHeight": 60.0
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "Health",
+      "type": "float",
+      "default": 100.0,
+      "category": "Stats",
+      "replication": "Replicated",
+      "description": "角色當前生命值"
+    },
+    {
+      "name": "MaxHealth",
+      "type": "float",
+      "default": 100.0,
+      "category": "Stats",
+      "replication": "Replicated",
+      "description": "角色最大生命值"
+    },
+    {
+      "name": "MoveSpeed",
+      "type": "float",
+      "default": 600.0,
+      "category": "Movement",
+      "replication": "Replicated",
+      "description": "角色移動速度"
+    },
+    {
+      "name": "bIsDead",
+      "type": "bool",
+      "default": false,
+      "category": "Stats",
+      "replication": "Replicated",
+      "description": "角色是否已死亡"
+    }
+  ],
+  "functions": [
+    {
+      "name": "TakeDamage",
+      "category": "Combat",
+      "description": "處理角色受到傷害的邏輯，扣除生命值並檢查是否死亡",
+      "inputs": [
+        { "name": "DamageAmount", "type": "float" },
+        { "name": "DamageType", "type": "DamageType" },
+        { "name": "InstigatedBy", "type": "Controller" },
+        { "name": "DamageCauser", "type": "Actor" }
+      ],
+      "outputs": [
+        { "name": "ActualDamage", "type": "float" }
+      ]
+    },
+    {
+      "name": "Die",
+      "category": "Combat",
+      "description": "處理角色死亡邏輯，播放死亡動畫並禁用輸入",
+      "inputs": [
+        { "name": "KillerController", "type": "Controller" }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "Respawn",
+      "category": "Combat",
+      "description": "重生角色，重置生命值與狀態並移動至出生點",
+      "inputs": [
+        { "name": "SpawnLocation", "type": "Vector" },
+        { "name": "SpawnRotation", "type": "Rotator" }
+      ],
+      "outputs": []
+    }
+  ],
+  "events": [
+    {
+      "name": "OnHealthChanged",
+      "category": "Stats",
+      "description": "當生命值變更時觸發，用於更新 UI 或觸發視覺效果",
+      "parameters": [
+        { "name": "OldHealth", "type": "float" },
+        { "name": "NewHealth", "type": "float" },
+        { "name": "DamageInstigator", "type": "Controller" }
+      ]
+    },
+    {
+      "name": "OnDeath",
+      "category": "Combat",
+      "description": "當角色死亡時觸發，用於通知 GameMode 或播放死亡特效",
+      "parameters": [
+        { "name": "KillerController", "type": "Controller" },
+        { "name": "DamageCauser", "type": "Actor" }
+      ]
+    }
+  ]
+}

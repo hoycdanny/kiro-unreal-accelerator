@@ -1,0 +1,313 @@
+{
+  "name": "BT_Combat",
+  "description": "戰鬥行為樹範本，提供完整的 NPC 戰鬥決策邏輯。包含低血量撤退/治療、距離判斷攻擊（近戰或遠程）、追擊目標與搜索最後已知位置四個主要分支，適用於具備戰鬥能力的敵人 AI。",
+  "behaviorTreeType": "BehaviorTree",
+  "root": {
+    "type": "Selector",
+    "name": "Root",
+    "description": "根節點：依優先順序選擇戰鬥行為分支",
+    "children": [
+      {
+        "type": "Sequence",
+        "name": "FleeAndHeal",
+        "description": "分支 1：低血量時撤退並嘗試治療",
+        "decorators": [
+          {
+            "type": "Blackboard",
+            "name": "IsLowHealth",
+            "description": "檢查 AlertLevel 是否表示低血量狀態（AlertLevel 用作健康百分比閾值）",
+            "parameters": {
+              "blackboardKey": "AlertLevel",
+              "keyQuery": "IsSet",
+              "notifyObserver": "OnValueChange",
+              "observerAborts": "Both"
+            }
+          },
+          {
+            "type": "BlackboardBased",
+            "name": "HealthThresholdCheck",
+            "description": "當血量低於 30% 時觸發撤退行為",
+            "parameters": {
+              "blackboardKey": "AlertLevel",
+              "operator": "LessThan",
+              "comparisonValue": 0.3
+            }
+          }
+        ],
+        "children": [
+          {
+            "type": "Task",
+            "name": "FindFleeLocation",
+            "taskType": "RunEQSQuery",
+            "description": "使用 EQS 查詢安全的撤退位置",
+            "parameters": {
+              "queryTemplate": "EQS_FindCover",
+              "blackboardKey": "TargetLocation",
+              "runMode": "SingleBestItem"
+            }
+          },
+          {
+            "type": "Task",
+            "name": "MoveTo_FleeLocation",
+            "taskType": "MoveTo",
+            "description": "移動至安全位置",
+            "parameters": {
+              "blackboardKey": "TargetLocation",
+              "acceptableRadius": 50.0,
+              "allowStrafe": true
+            }
+          },
+          {
+            "type": "Task",
+            "name": "Heal",
+            "taskType": "Custom",
+            "description": "執行治療動作（需自訂 BTTask）",
+            "parameters": {
+              "customTaskClass": "BTTask_Heal",
+              "healAmount": 30.0,
+              "healDuration": 2.0
+            }
+          }
+        ]
+      },
+      {
+        "type": "Sequence",
+        "name": "AttackInRange",
+        "description": "分支 2：目標在攻擊範圍內時選擇近戰或遠程攻擊",
+        "decorators": [
+          {
+            "type": "Blackboard",
+            "name": "HasTarget_Attack",
+            "description": "確認存在有效攻擊目標",
+            "parameters": {
+              "blackboardKey": "TargetActor",
+              "keyQuery": "IsSet",
+              "notifyObserver": "OnValueChange",
+              "observerAborts": "Both"
+            }
+          }
+        ],
+        "services": [
+          {
+            "type": "Custom",
+            "name": "UpdateTarget",
+            "description": "持續更新目標狀態，包含距離計算與可見性檢查",
+            "parameters": {
+              "customServiceClass": "BTService_UpdateTarget",
+              "interval": 0.3,
+              "randomDeviation": 0.05
+            }
+          },
+          {
+            "type": "Custom",
+            "name": "UpdateCombatState",
+            "description": "更新戰鬥狀態，決定攻擊模式（近戰/遠程）與戰術行為",
+            "parameters": {
+              "customServiceClass": "BTService_UpdateCombatState",
+              "interval": 0.5,
+              "randomDeviation": 0.1
+            }
+          }
+        ],
+        "children": [
+          {
+            "type": "Selector",
+            "name": "ChooseAttackType",
+            "description": "根據與目標的距離選擇攻擊方式",
+            "children": [
+              {
+                "type": "Sequence",
+                "name": "MeleeAttack",
+                "description": "近戰攻擊：目標在近戰範圍內",
+                "decorators": [
+                  {
+                    "type": "Custom",
+                    "name": "IsInMeleeRange",
+                    "description": "檢查目標是否在近戰攻擊範圍內",
+                    "parameters": {
+                      "customDecoratorClass": "BTDecorator_DistanceCheck",
+                      "blackboardKey": "TargetActor",
+                      "maxDistance": 250.0
+                    }
+                  }
+                ],
+                "children": [
+                  {
+                    "type": "Task",
+                    "name": "RotateToFaceTarget_Melee",
+                    "taskType": "RotateToFaceBBEntry",
+                    "description": "面向目標",
+                    "parameters": {
+                      "blackboardKey": "TargetActor"
+                    }
+                  },
+                  {
+                    "type": "Task",
+                    "name": "ExecuteMeleeAttack",
+                    "taskType": "Custom",
+                    "description": "執行近戰攻擊動作",
+                    "parameters": {
+                      "customTaskClass": "BTTask_MeleeAttack",
+                      "attackMontage": null,
+                      "damage": 25.0,
+                      "attackRate": 1.2
+                    }
+                  }
+                ]
+              },
+              {
+                "type": "Sequence",
+                "name": "RangedAttack",
+                "description": "遠程攻擊：目標在遠程範圍內但超出近戰範圍",
+                "decorators": [
+                  {
+                    "type": "Custom",
+                    "name": "IsInRangedRange",
+                    "description": "檢查目標是否在遠程攻擊範圍內",
+                    "parameters": {
+                      "customDecoratorClass": "BTDecorator_DistanceCheck",
+                      "blackboardKey": "TargetActor",
+                      "minDistance": 250.0,
+                      "maxDistance": 1500.0
+                    }
+                  }
+                ],
+                "children": [
+                  {
+                    "type": "Task",
+                    "name": "RotateToFaceTarget_Ranged",
+                    "taskType": "RotateToFaceBBEntry",
+                    "description": "面向目標",
+                    "parameters": {
+                      "blackboardKey": "TargetActor"
+                    }
+                  },
+                  {
+                    "type": "Task",
+                    "name": "ExecuteRangedAttack",
+                    "taskType": "Custom",
+                    "description": "執行遠程攻擊動作（發射投射物）",
+                    "parameters": {
+                      "customTaskClass": "BTTask_RangedAttack",
+                      "projectileClass": null,
+                      "damage": 15.0,
+                      "attackRate": 0.8,
+                      "accuracy": 0.85
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Sequence",
+        "name": "ChaseTarget",
+        "description": "分支 3：有目標但不在攻擊範圍內時追擊",
+        "decorators": [
+          {
+            "type": "Blackboard",
+            "name": "HasTarget_Chase",
+            "description": "確認存在有效追擊目標",
+            "parameters": {
+              "blackboardKey": "TargetActor",
+              "keyQuery": "IsSet",
+              "notifyObserver": "OnValueChange",
+              "observerAborts": "LowerPriority"
+            }
+          }
+        ],
+        "children": [
+          {
+            "type": "Task",
+            "name": "MoveTo_ChaseTarget",
+            "taskType": "MoveTo",
+            "description": "追擊目標至攻擊範圍內",
+            "parameters": {
+              "blackboardKey": "TargetActor",
+              "acceptableRadius": 200.0,
+              "observeBlackboardValue": true,
+              "allowStrafe": true,
+              "usePathfinding": true
+            }
+          }
+        ]
+      },
+      {
+        "type": "Sequence",
+        "name": "SearchLastKnownLocation",
+        "description": "分支 4：失去目標後搜索最後已知位置",
+        "decorators": [
+          {
+            "type": "Blackboard",
+            "name": "HasLastKnownLocation",
+            "description": "檢查是否記錄了目標的最後已知位置",
+            "parameters": {
+              "blackboardKey": "LastKnownLocation",
+              "keyQuery": "IsSet",
+              "notifyObserver": "OnValueChange",
+              "observerAborts": "None"
+            }
+          }
+        ],
+        "children": [
+          {
+            "type": "Task",
+            "name": "MoveTo_LastKnownLocation",
+            "taskType": "MoveTo",
+            "description": "移動至目標最後已知位置",
+            "parameters": {
+              "blackboardKey": "LastKnownLocation",
+              "acceptableRadius": 100.0,
+              "allowStrafe": false
+            }
+          },
+          {
+            "type": "Task",
+            "name": "Wait_SearchArea",
+            "taskType": "Wait",
+            "description": "在最後已知位置附近搜索等待",
+            "parameters": {
+              "waitTime": 5.0,
+              "randomDeviation": 1.5
+            }
+          },
+          {
+            "type": "Task",
+            "name": "ClearLastKnownLocation",
+            "taskType": "Custom",
+            "description": "清除最後已知位置，返回預設行為（需自訂 BTTask）",
+            "parameters": {
+              "customTaskClass": "BTTask_ClearBlackboardValue",
+              "blackboardKey": "LastKnownLocation"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "requiredBlackboardKeys": [
+    "TargetActor",
+    "TargetLocation",
+    "LastKnownLocation",
+    "AlertLevel",
+    "CurrentState"
+  ],
+  "notes": {
+    "customTasks": [
+      "BTTask_Heal：需實作治療邏輯，包含動畫播放與屬性恢復",
+      "BTTask_MeleeAttack：需實作近戰攻擊邏輯，包含動畫蒙太奇與傷害判定",
+      "BTTask_RangedAttack：需實作遠程攻擊邏輯，包含投射物生成與瞄準",
+      "BTTask_ClearBlackboardValue：清除指定黑板鍵值"
+    ],
+    "customServices": [
+      "BTService_UpdateTarget：持續追蹤目標位置與狀態",
+      "BTService_UpdateCombatState：根據血量、距離等更新戰鬥狀態"
+    ],
+    "customDecorators": [
+      "BTDecorator_DistanceCheck：檢查與目標的距離是否在指定範圍內"
+    ],
+    "usage": "搭配 blackboard-npc 範本使用。建議與 eqs-find-cover 範本配合實現撤退尋找掩體邏輯。"
+  }
+}

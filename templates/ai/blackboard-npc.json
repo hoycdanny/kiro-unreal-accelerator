@@ -1,0 +1,66 @@
+{
+  "name": "BB_NPC",
+  "description": "NPC 黑板範本，定義 AI 行為樹所需的標準鍵值集合。包含目標追蹤、巡邏管理、警戒狀態與空間記憶等常用鍵值，適用於大多數 NPC AI 場景。",
+  "blackboardType": "BlackboardData",
+  "keys": [
+    {
+      "name": "TargetActor",
+      "type": "Object",
+      "baseClass": "Actor",
+      "description": "當前追蹤的目標 Actor，由 AI 感知系統更新",
+      "instanceSynced": false
+    },
+    {
+      "name": "TargetLocation",
+      "type": "Vector",
+      "description": "目標位置或當前巡邏點位置，用於 MoveTo 任務",
+      "instanceSynced": false
+    },
+    {
+      "name": "PatrolIndex",
+      "type": "Int",
+      "description": "當前巡邏點索引，用於在巡邏點陣列中循環",
+      "instanceSynced": false
+    },
+    {
+      "name": "HomeLocation",
+      "type": "Vector",
+      "description": "AI 的初始出生位置，用於返回原點或計算巡邏範圍",
+      "instanceSynced": false
+    },
+    {
+      "name": "AlertLevel",
+      "type": "Float",
+      "description": "警戒等級（0.0 = 平靜，0.5 = 警覺，1.0 = 戰鬥），影響 AI 行為決策與感知靈敏度",
+      "instanceSynced": false
+    },
+    {
+      "name": "bHasTarget",
+      "type": "Bool",
+      "description": "是否擁有有效目標的快取旗標，用於快速條件判斷",
+      "instanceSynced": false
+    },
+    {
+      "name": "LastKnownLocation",
+      "type": "Vector",
+      "description": "目標最後已知位置，當失去目標感知時記錄，用於搜索行為",
+      "instanceSynced": false
+    },
+    {
+      "name": "CurrentState",
+      "type": "Enum",
+      "enumClass": "EAIState",
+      "description": "AI 當前狀態列舉（Idle、Patrol、Alert、Combat、Flee、Search），用於狀態機邏輯",
+      "instanceSynced": false,
+      "enumValues": ["Idle", "Patrol", "Alert", "Combat", "Flee", "Search"]
+    }
+  ],
+  "notes": {
+    "usage": "此黑板範本設計為搭配 behavior-tree-patrol 與 behavior-tree-combat 範本使用。所有鍵值均為非同步實例，適用於單一 AI 角色。若需多個 AI 共享資訊，可將特定鍵值設為 instanceSynced: true。",
+    "extensionPoints": [
+      "可新增 CoverLocation (Vector) 鍵值用於掩體系統",
+      "可新增 TeamId (Int) 鍵值用於陣營識別",
+      "可新增 ThreatLevel (Float) 鍵值用於威脅評估系統"
+    ]
+  }
+}

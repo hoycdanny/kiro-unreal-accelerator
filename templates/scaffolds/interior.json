@@ -1,0 +1,94 @@
+{
+  "name": "Interior",
+  "description": "室內/房間關卡腳手架，適用於室內環境設計。以點光源為主要照明，搭配反射捕捉提升室內光照品質，包含導航網格與全域後處理。",
+  "levelType": "Interior",
+  "worldPartition": {
+    "enabled": false,
+    "gridSize": 3200,
+    "loadingRange": 6400
+  },
+  "dataLayers": [],
+  "actors": [
+    {
+      "class": "PointLight",
+      "name": "CeilingLight_Main",
+      "mobility": "Stationary",
+      "properties": {
+        "intensity": 5000.0,
+        "lightColor": [255, 244, 214],
+        "attenuationRadius": 1000.0,
+        "castShadows": true,
+        "location": { "x": 0, "y": 0, "z": 300 }
+      }
+    },
+    {
+      "class": "PointLight",
+      "name": "CeilingLight_Secondary",
+      "mobility": "Stationary",
+      "properties": {
+        "intensity": 3000.0,
+        "lightColor": [255, 244, 214],
+        "attenuationRadius": 800.0,
+        "castShadows": false,
+        "location": { "x": 500, "y": 500, "z": 300 }
+      }
+    },
+    {
+      "class": "PointLight",
+      "name": "AccentLight",
+      "mobility": "Stationary",
+      "properties": {
+        "intensity": 2000.0,
+        "lightColor": [230, 240, 255],
+        "attenuationRadius": 600.0,
+        "castShadows": false,
+        "location": { "x": -400, "y": -300, "z": 250 }
+      }
+    },
+    {
+      "class": "PostProcessVolume",
+      "name": "InteriorPostProcess",
+      "properties": {
+        "infinite": true,
+        "priority": 0,
+        "blendWeight": 1.0,
+        "autoExposureEnabled": true,
+        "autoExposureMinBrightness": 0.5,
+        "autoExposureMaxBrightness": 2.0,
+        "bloomEnabled": true,
+        "ambientOcclusionEnabled": true,
+        "ambientOcclusionIntensity": 0.8
+      }
+    },
+    {
+      "class": "SphereReflectionCapture",
+      "name": "ReflectionCapture_Main",
+      "properties": {
+        "influenceRadius": 1500.0,
+        "location": { "x": 0, "y": 0, "z": 150 }
+      }
+    },
+    {
+      "class": "SphereReflectionCapture",
+      "name": "ReflectionCapture_Secondary",
+      "properties": {
+        "influenceRadius": 800.0,
+        "location": { "x": 500, "y": 500, "z": 150 }
+      }
+    },
+    {
+      "class": "NavMeshBoundsVolume",
+      "name": "InteriorNavMesh",
+      "properties": {
+        "extent": { "x": 1500, "y": 1500, "z": 500 }
+      }
+    }
+  ],
+  "folders": [
+    "Architecture",
+    "Lighting",
+    "Props",
+    "Gameplay",
+    "Audio"
+  ]
+}

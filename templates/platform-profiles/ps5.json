@@ -1,0 +1,71 @@
+{
+  "name": "PlayStation5",
+  "platform": "PS5",
+  "description": "PlayStation 5 平台設定檔，使用自訂 GPU 架構與 RDNA 2 圖形處理器，支援 Nanite 與 Lumen",
+  "targetRHI": "AGC",
+  "shaderFormats": ["SF_PS5"],
+  "shaderModel": "SM6_Equivalent",
+  "featureLevel": "ES3_1",
+  "rendering": {
+    "naniteSupported": true,
+    "lumenSupported": true,
+    "virtualShadowMapsSupported": true,
+    "rayTracingSupported": true,
+    "hardwareRayTracing": true,
+    "meshShadersSupported": false,
+    "variableRateShadingSupported": true,
+    "bindlessResourcesSupported": false,
+    "primitiveShaders": true
+  },
+  "memory": {
+    "totalBudgetMB": 12288,
+    "textureBudgetMB": 3072,
+    "meshBudgetMB": 1536,
+    "audioBudgetMB": 512,
+    "videoMemoryBudgetMB": 6144,
+    "textureStreamingPoolMB": 1536,
+    "unifiedMemory": true,
+    "totalSystemMemoryMB": 16384
+  },
+  "scalability": {
+    "viewDistanceQuality": 3,
+    "antiAliasingQuality": 3,
+    "shadowQuality": 3,
+    "globalIlluminationQuality": 3,
+    "reflectionQuality": 3,
+    "postProcessQuality": 3,
+    "textureQuality": 3,
+    "effectsQuality": 3,
+    "foliageQuality": 3,
+    "shadingQuality": 3
+  },
+  "input": {
+    "supportedDevices": ["DualSense"],
+    "hapticFeedback": true,
+    "adaptiveTriggers": true,
+    "touchpad": true,
+    "motionSensor": true,
+    "speaker": true
+  },
+  "storage": {
+    "ssdRequired": true,
+    "ioThroughputGBps": 5.5,
+    "compressionSupported": true,
+    "customDecompression": true
+  },
+  "packaging": {
+    "targetArchitecture": "x86_64",
+    "maxPackageSizeGB": 100,
+    "chunkingRequired": true,
+    "patchSizeOptimization": true
+  },
+  "notes": {
+    "recommendations": [
+      "利用 PS5 SSD 高速 IO 實作無縫串流載入",
+      "整合 DualSense 觸覺回饋與自適應扳機提升沉浸感",
+      "注意統一記憶體架構下的記憶體分配策略",
+      "使用 Primitive Shaders 取代 Mesh Shaders 進行幾何處理",
+      "確保符合 Sony TRC（Technical Requirements Checklist）規範"
+    ]
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "name": "SkeletalMesh_Character",
+  "assetType": "SkeletalMesh",
+  "description": "角色骨骼網格預設，適用於可動畫化的角色模型，包含骨架、物理資產與 LOD 設定",
+  "settings": {
+    "skeleton": null,
+    "physicsAsset": null,
+    "shadowPhysicsAsset": null,
+    "lodCount": 4,
+    "lodScreenSizes": [1.0, 0.4, 0.2, 0.1],
+    "lodReductionPercent": [0, 40, 65, 85],
+    "enablePerPolyCollision": false,
+    "useFullPrecisionUVs": false,
+    "useHighPrecisionTangentBasis": false,
+    "stripLODsOnCook": true,
+    "minLODForShadows": 2,
+    "castShadow": true,
+    "bEnablePerPolyCollision": false,
+    "skinWeightProfileName": "Default",
+    "maxBoneInfluences": 8
+  },
+  "validations": [
+    {
+      "rule": "hasSkeleton",
+      "condition": "骨骼網格必須綁定有效的骨架（Skeleton）資產",
+      "severity": "error"
+    },
+    {
+      "rule": "hasPhysicsAsset",
+      "condition": "角色骨骼網格應具有物理資產（Physics Asset）以支援布娃娃與碰撞",
+      "severity": "warning"
+    },
+    {
+      "rule": "boneCountLimit",
+      "condition": "骨骼數量建議不超過 256 以維持動畫效能，行動平台建議不超過 75",
+      "severity": "warning"
+    },
+    {
+      "rule": "hasLODs",
+      "condition": "角色網格應包含至少 2 個 LOD 層級以最佳化效能",
+      "severity": "warning"
+    },
+    {
+      "rule": "skinWeightLimit",
+      "condition": "每個頂點的骨骼影響數建議不超過 8，行動平台建議不超過 4",
+      "severity": "info"
+    }
+  ],
+  "requirements": [
+    {
+      "check": "validSkeleton",
+      "description": "必須具有有效的骨架資產，且骨骼階層結構正確",
+      "required": true
+    },
+    {
+      "check": "rootBone",
+      "description": "骨架必須包含根骨骼（Root Bone）",
+      "required": true
+    },
+    {
+      "check": "skinWeights",
+      "description": "所有頂點必須具有有效的蒙皮權重",
+      "required": true
+    },
+    {
+      "check": "physicsAsset",
+      "description": "建議建立物理資產以支援布娃娃系統與碰撞偵測",
+      "required": false
+    }
+  ]
+}

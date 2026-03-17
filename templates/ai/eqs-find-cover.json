@@ -1,0 +1,131 @@
+{
+  "name": "EQS_FindCover",
+  "description": "EQS 掩體查詢範本，用於尋找遠離威脅且對查詢者可達的掩體位置。使用環形網格生成候選點，透過距離、視線、路徑成本等測試評分，優先選擇靠近查詢者但隱蔽於威脅的位置。",
+  "queryType": "EnvQuery",
+  "generator": {
+    "type": "Donut",
+    "name": "CoverPointGenerator",
+    "description": "以查詢者為中心生成環形候選點網格，排除過近的位置",
+    "parameters": {
+      "innerRadius": 300.0,
+      "outerRadius": 1500.0,
+      "numberOfRings": 5,
+      "pointsPerRing": 12,
+      "arcDirection": "Pawn",
+      "arcAngle": 360.0,
+      "center": "Querier",
+      "projectionOnNavmesh": true,
+      "navigationFilter": "Default"
+    }
+  },
+  "contexts": [
+    {
+      "name": "Querier",
+      "type": "Querier",
+      "description": "查詢者自身（需要尋找掩體的 AI）"
+    },
+    {
+      "name": "Threat",
+      "type": "EnvQueryContext_BlueprintBase",
+      "description": "威脅來源（通常為黑板中的 TargetActor），用於視線與距離計算",
+      "parameters": {
+        "blackboardKey": "TargetActor"
+      }
+    }
+  ],
+  "tests": [
+    {
+      "name": "DistanceToThreat",
+      "type": "Distance",
+      "description": "與威脅的距離：偏好適中距離，太近不安全，太遠失去戰術意義",
+      "parameters": {
+        "distanceTo": "Threat",
+        "testMode": "Distance3D"
+      },
+      "scoring": {
+        "scoringEquation": "InverseLinear",
+        "clampMin": 300.0,
+        "clampMax": 2000.0,
+        "scoringFactor": 0.8,
+        "filterType": "Minimum",
+        "floatMin": 500.0
+      }
+    },
+    {
+      "name": "TraceToThreat",
+      "type": "Trace",
+      "description": "對威脅的視線檢查：偏好威脅無法直接看到的位置（被遮擋）",
+      "parameters": {
+        "traceTo": "Threat",
+        "traceChannel": "Visibility",
+        "traceFromContext": "Item",
+        "itemHeightOffset": 100.0,
+        "contextHeightOffset": 100.0,
+        "traceComplex": false
+      },
+      "scoring": {
+        "scoringEquation": "Constant",
+        "scoringFactor": 2.0,
+        "boolMatch": false,
+        "description": "視線被遮擋（Trace 失敗）的位置獲得高分"
+      }
+    },
+    {
+      "name": "DistanceToQuerier",
+      "type": "Distance",
+      "description": "與查詢者的距離：偏好靠近查詢者的位置，減少移動時間",
+      "parameters": {
+        "distanceTo": "Querier",
+        "testMode": "Distance3D"
+      },
+      "scoring": {
+        "scoringEquation": "InverseLinear",
+        "clampMin": 0.0,
+        "clampMax": 1500.0,
+        "scoringFactor": 1.0
+      }
+    },
+    {
+      "name": "PathfindingCost",
+      "type": "Pathfinding",
+      "description": "路徑成本：偏好路徑成本低的位置，確保 AI 能快速到達",
+      "parameters": {
+        "pathTo": "Querier",
+        "testMode": "PathCost",
+        "navigationFilter": "Default"
+      },
+      "scoring": {
+        "scoringEquation": "InverseLinear",
+        "clampMin": 0.0,
+        "clampMax": 3000.0,
+        "scoringFactor": 0.6,
+        "filterType": "Maximum",
+        "floatMax": 5000.0
+      }
+    }
+  ],
+  "scoringStrategy": {
+    "method": "WeightedSum",
+    "description": "使用加權總和計算最終分數。視線遮擋權重最高（2.0），其次為查詢者距離（1.0）與威脅距離（0.8），路徑成本權重最低（0.6）。",
+    "weights": {
+      "DistanceToThreat": 0.8,
+      "TraceToThreat": 2.0,
+      "DistanceToQuerier": 1.0,
+      "PathfindingCost": 0.6
+    }
+  },
+  "notes": {
+    "usage": "此 EQS 查詢設計為搭配 behavior-tree-combat 範本的撤退分支使用。查詢結果寫入黑板的 TargetLocation 鍵值，AI 隨後移動至該位置。",
+    "tuning": [
+      "調整 innerRadius/outerRadius 控制搜索範圍",
+      "調整 TraceToThreat 的 scoringFactor 控制掩體偏好強度",
+      "調整 DistanceToQuerier 的 scoringFactor 控制距離偏好",
+      "增加 Dot 測試可偏好特定方向的掩體（如側翼）"
+    ],
+    "extensionPoints": [
+      "可新增 Dot 測試偏好威脅側翼方向的掩體",
+      "可新增 Overlap 測試排除已被其他 AI 佔用的掩體",
+      "可新增高度差測試偏好高處掩體位置"
+    ]
+  }
+}

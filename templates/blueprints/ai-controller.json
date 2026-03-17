@@ -1,0 +1,150 @@
+{
+  "name": "BP_AIController",
+  "description": "AI 控制器 Blueprint 範本，提供標準的 AI 行為控制框架。包含 AI 感知元件（視覺與聽覺）、行為樹與黑板整合、巡邏點管理與目標追蹤，適用於敵人 NPC 或友方 AI 角色。",
+  "parentClass": "/Script/AIModule.AIController",
+  "components": [
+    {
+      "name": "AIPerceptionComponent",
+      "class": "AIPerceptionComponent",
+      "attachTo": null,
+      "properties": {
+        "dominantSense": "AISense_Sight",
+        "senses": [
+          {
+            "senseClass": "AISense_Sight",
+            "sightRadius": 3000.0,
+            "loseSightRadius": 3500.0,
+            "peripheralVisionAngle": 60.0,
+            "autoSuccessRangeFromLastSeenLocation": 500.0,
+            "maxAge": 5.0,
+            "detectionByAffiliation": {
+              "enemies": true,
+              "neutrals": false,
+              "friendlies": false
+            }
+          },
+          {
+            "senseClass": "AISense_Hearing",
+            "hearingRange": 2000.0,
+            "loSHearingRange": 4000.0,
+            "maxAge": 3.0,
+            "detectFriendly": false
+          }
+        ]
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "BehaviorTreeAsset",
+      "type": "BehaviorTree",
+      "default": null,
+      "category": "AI",
+      "replication": "None",
+      "description": "要執行的行為樹資產參照"
+    },
+    {
+      "name": "BlackboardAsset",
+      "type": "BlackboardData",
+      "default": null,
+      "category": "AI",
+      "replication": "None",
+      "description": "行為樹使用的黑板資產參照"
+    },
+    {
+      "name": "PatrolPoints",
+      "type": "TArray<Vector>",
+      "default": [],
+      "category": "AI|Patrol",
+      "replication": "None",
+      "description": "巡邏路徑點陣列，AI 將依序巡邏這些位置"
+    },
+    {
+      "name": "CurrentTarget",
+      "type": "Actor",
+      "default": null,
+      "category": "AI|Combat",
+      "replication": "None",
+      "description": "當前追蹤的目標 Actor"
+    },
+    {
+      "name": "bIsAlerted",
+      "type": "bool",
+      "default": false,
+      "category": "AI|State",
+      "replication": "Replicated",
+      "description": "AI 是否處於警戒狀態"
+    }
+  ],
+  "functions": [
+    {
+      "name": "StartBehaviorTree",
+      "category": "AI",
+      "description": "啟動行為樹執行，初始化黑板並開始 AI 決策循環",
+      "inputs": [
+        { "name": "BehaviorTree", "type": "BehaviorTree" },
+        { "name": "Blackboard", "type": "BlackboardData" }
+      ],
+      "outputs": [
+        { "name": "bSuccess", "type": "bool" }
+      ]
+    },
+    {
+      "name": "SetTarget",
+      "category": "AI|Combat",
+      "description": "設定追蹤目標，更新黑板中的目標鍵值並切換至戰鬥狀態",
+      "inputs": [
+        { "name": "NewTarget", "type": "Actor" }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "ClearTarget",
+      "category": "AI|Combat",
+      "description": "清除當前目標，重置黑板中的目標鍵值並返回巡邏狀態",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "UpdatePerception",
+      "category": "AI|Perception",
+      "description": "手動更新 AI 感知狀態，處理感知到的 Actor 列表並決定是否切換目標",
+      "inputs": [
+        { "name": "PerceivedActors", "type": "TArray<Actor>" }
+      ],
+      "outputs": [
+        { "name": "bTargetChanged", "type": "bool" }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "OnTargetPerceived",
+      "category": "AI|Perception",
+      "description": "當 AI 感知到新目標時觸發，用於切換至警戒或戰鬥狀態",
+      "parameters": [
+        { "name": "PerceivedActor", "type": "Actor" },
+        { "name": "Stimulus", "type": "AIStimulus" }
+      ]
+    },
+    {
+      "name": "OnTargetLost",
+      "category": "AI|Perception",
+      "description": "當 AI 失去目標感知時觸發，用於切換至搜索或巡邏狀態",
+      "parameters": [
+        { "name": "LostActor", "type": "Actor" },
+        { "name": "LastKnownLocation", "type": "Vector" }
+      ]
+    },
+    {
+      "name": "OnDamageReceived",
+      "category": "AI|Combat",
+      "description": "當 AI 控制的 Pawn 受到傷害時觸發，用於切換至警戒狀態或更新目標",
+      "parameters": [
+        { "name": "DamageAmount", "type": "float" },
+        { "name": "DamageInstigator", "type": "Controller" },
+        { "name": "DamageCauser", "type": "Actor" }
+      ]
+    }
+  ]
+}

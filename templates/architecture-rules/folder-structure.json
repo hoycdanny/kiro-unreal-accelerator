@@ -1,0 +1,186 @@
+{
+  "name": "UE5_FolderStructure",
+  "description": "Unreal Engine 5 專案推薦資料夾結構，定義 Content 目錄下的標準組織方式",
+  "version": "1.0",
+  "rootPath": "/Content",
+  "structure": {
+    "Blueprints": {
+      "description": "所有 Blueprint 類別",
+      "children": {
+        "Characters": {
+          "description": "角色相關 Blueprint",
+          "children": {
+            "Player": { "description": "玩家角色" },
+            "NPCs": { "description": "NPC 角色" },
+            "Enemies": { "description": "敵人角色" }
+          }
+        },
+        "Weapons": { "description": "武器 Blueprint" },
+        "Items": { "description": "物品與拾取物 Blueprint" },
+        "Interactables": { "description": "可互動物件 Blueprint" },
+        "GameModes": { "description": "遊戲模式與狀態 Blueprint" },
+        "Components": { "description": "自訂元件 Blueprint" }
+      }
+    },
+    "Materials": {
+      "description": "材質與材質實例",
+      "children": {
+        "Master": { "description": "主材質（Parent Materials）" },
+        "Instances": { "description": "材質實例" },
+        "Functions": { "description": "材質函數" },
+        "PostProcess": { "description": "後處理材質" },
+        "Decals": { "description": "貼花材質" },
+        "Landscape": { "description": "地形材質" }
+      }
+    },
+    "Textures": {
+      "description": "貼圖資產",
+      "children": {
+        "Characters": { "description": "角色貼圖" },
+        "Environment": { "description": "環境貼圖" },
+        "Weapons": { "description": "武器貼圖" },
+        "UI": { "description": "UI 貼圖與圖示" },
+        "VFX": { "description": "特效貼圖" },
+        "HDRI": { "description": "HDR 環境貼圖" }
+      }
+    },
+    "Meshes": {
+      "description": "靜態與骨骼網格",
+      "children": {
+        "Characters": { "description": "角色網格" },
+        "Weapons": { "description": "武器網格" },
+        "Environment": {
+          "description": "環境網格",
+          "children": {
+            "Architecture": { "description": "建築結構" },
+            "Nature": { "description": "自然物件" },
+            "Props": { "description": "道具" }
+          }
+        },
+        "VFX": { "description": "特效用網格" }
+      }
+    },
+    "Animations": {
+      "description": "動畫資產",
+      "children": {
+        "Characters": {
+          "description": "角色動畫",
+          "children": {
+            "Locomotion": { "description": "移動動畫" },
+            "Combat": { "description": "戰鬥動畫" },
+            "Interactions": { "description": "互動動畫" }
+          }
+        },
+        "AnimBlueprints": { "description": "動畫藍圖" },
+        "BlendSpaces": { "description": "混合空間" },
+        "Montages": { "description": "動畫蒙太奇" },
+        "ControlRigs": { "description": "Control Rig 資產" }
+      }
+    },
+    "Audio": {
+      "description": "音訊資產",
+      "children": {
+        "SFX": { "description": "音效" },
+        "Music": { "description": "音樂" },
+        "Ambient": { "description": "環境音" },
+        "Dialogue": { "description": "對話語音" },
+        "SoundCues": { "description": "音訊提示" },
+        "MetaSounds": { "description": "MetaSound 資產" }
+      }
+    },
+    "VFX": {
+      "description": "視覺特效",
+      "children": {
+        "Niagara": { "description": "Niagara 粒子系統" },
+        "Cascade": { "description": "Cascade 粒子系統（舊版）" },
+        "Shared": { "description": "共用特效資源" }
+      }
+    },
+    "UI": {
+      "description": "使用者介面",
+      "children": {
+        "Widgets": { "description": "Widget Blueprint" },
+        "Fonts": { "description": "字型資產" },
+        "Icons": { "description": "圖示" },
+        "Styles": { "description": "UI 樣式" }
+      }
+    },
+    "Maps": {
+      "description": "關卡地圖",
+      "children": {
+        "MainMenu": { "description": "主選單關卡" },
+        "Gameplay": { "description": "遊戲關卡" },
+        "Test": { "description": "測試關卡" },
+        "Sublevels": { "description": "子關卡" }
+      }
+    },
+    "AI": {
+      "description": "AI 系統資產",
+      "children": {
+        "BehaviorTrees": { "description": "行為樹" },
+        "Blackboards": { "description": "黑板資料" },
+        "EQS": { "description": "環境查詢" },
+        "Tasks": { "description": "自訂 AI 任務" }
+      }
+    },
+    "GAS": {
+      "description": "Gameplay Ability System 資產",
+      "children": {
+        "Abilities": { "description": "Gameplay Ability" },
+        "Effects": { "description": "Gameplay Effect" },
+        "Cues": { "description": "Gameplay Cue" },
+        "AttributeSets": { "description": "屬性集" }
+      }
+    },
+    "Data": {
+      "description": "資料資產",
+      "children": {
+        "DataTables": { "description": "資料表" },
+        "DataAssets": { "description": "資料資產" },
+        "Curves": { "description": "曲線資產" },
+        "Configs": { "description": "配置資產" }
+      }
+    },
+    "Core": {
+      "description": "核心系統資產",
+      "children": {
+        "GameModes": { "description": "遊戲模式" },
+        "Input": { "description": "輸入配置" },
+        "SaveSystem": { "description": "存檔系統" }
+      }
+    },
+    "_Dev": {
+      "description": "開發者個人測試資料夾（不納入版本控制）",
+      "excludeFromBuild": true,
+      "children": {}
+    }
+  },
+  "validationRules": [
+    {
+      "rule": "noAssetsInRoot",
+      "description": "不應將資產直接放在 /Content 根目錄下",
+      "severity": "warning"
+    },
+    {
+      "rule": "noEmptyFolders",
+      "description": "避免空資料夾，未使用的資料夾應移除",
+      "severity": "info"
+    },
+    {
+      "rule": "devFolderExcluded",
+      "description": "_Dev 資料夾不應包含在發行建置中",
+      "severity": "error"
+    },
+    {
+      "rule": "maxFolderDepth",
+      "value": 6,
+      "description": "資料夾巢狀深度不應超過 6 層以避免路徑過長",
+      "severity": "warning"
+    },
+    {
+      "rule": "pascalCaseFolders",
+      "description": "資料夾名稱使用 PascalCase，不含空格或特殊字元",
+      "severity": "warning"
+    }
+  ]
+}

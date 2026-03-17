@@ -1,0 +1,203 @@
+{
+  "name": "UBaseAttributeSet",
+  "description": "基礎屬性集範本，定義角色核心屬性（生命、魔力、體力、攻擊力、護甲、移動速度）。包含每個屬性的預設值、夾值規則與複製設定，以及 PostGameplayEffectExecute 鉤子用於處理屬性變更後的遊戲邏輯。",
+  "attributeSetType": "AttributeSet",
+  "parentClass": "UAttributeSet",
+  "attributes": [
+    {
+      "name": "Health",
+      "type": "FGameplayAttributeData",
+      "baseValue": 100.0,
+      "description": "角色當前生命值",
+      "clamping": {
+        "mode": "MinMax",
+        "min": 0.0,
+        "maxAttribute": "MaxHealth",
+        "description": "夾值於 0 與 MaxHealth 之間，到達 0 時觸發死亡"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged",
+        "description": "使用 GAMEPLAYATTRIBUTE_REPNOTIFY 巨集進行複製通知"
+      }
+    },
+    {
+      "name": "MaxHealth",
+      "type": "FGameplayAttributeData",
+      "baseValue": 100.0,
+      "description": "角色最大生命值上限",
+      "clamping": {
+        "mode": "Min",
+        "min": 1.0,
+        "description": "最小值為 1，防止最大生命值為 0 或負數"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged"
+      }
+    },
+    {
+      "name": "Mana",
+      "type": "FGameplayAttributeData",
+      "baseValue": 100.0,
+      "description": "角色當前魔力值",
+      "clamping": {
+        "mode": "MinMax",
+        "min": 0.0,
+        "maxAttribute": "MaxMana",
+        "description": "夾值於 0 與 MaxMana 之間，防止負數魔力"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged"
+      }
+    },
+    {
+      "name": "MaxMana",
+      "type": "FGameplayAttributeData",
+      "baseValue": 100.0,
+      "description": "角色最大魔力值上限",
+      "clamping": {
+        "mode": "Min",
+        "min": 0.0,
+        "description": "最小值為 0"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged"
+      }
+    },
+    {
+      "name": "Stamina",
+      "type": "FGameplayAttributeData",
+      "baseValue": 100.0,
+      "description": "角色當前體力值",
+      "clamping": {
+        "mode": "MinMax",
+        "min": 0.0,
+        "maxAttribute": "MaxStamina",
+        "description": "夾值於 0 與 MaxStamina 之間"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged"
+      }
+    },
+    {
+      "name": "MaxStamina",
+      "type": "FGameplayAttributeData",
+      "baseValue": 100.0,
+      "description": "角色最大體力值上限",
+      "clamping": {
+        "mode": "Min",
+        "min": 0.0,
+        "description": "最小值為 0"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged"
+      }
+    },
+    {
+      "name": "AttackPower",
+      "type": "FGameplayAttributeData",
+      "baseValue": 10.0,
+      "description": "角色基礎攻擊力，用於傷害計算公式",
+      "clamping": {
+        "mode": "Min",
+        "min": 0.0,
+        "description": "最小值為 0，允許無限堆疊"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged"
+      }
+    },
+    {
+      "name": "Armor",
+      "type": "FGameplayAttributeData",
+      "baseValue": 5.0,
+      "description": "角色護甲值，用於傷害減免計算",
+      "clamping": {
+        "mode": "Min",
+        "min": 0.0,
+        "description": "最小值為 0，允許無限堆疊"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged"
+      }
+    },
+    {
+      "name": "MoveSpeed",
+      "type": "FGameplayAttributeData",
+      "baseValue": 600.0,
+      "description": "角色移動速度",
+      "clamping": {
+        "mode": "MinMax",
+        "min": 0.0,
+        "max": 2000.0,
+        "description": "夾值於 0 與 2000 之間，防止負數或極端速度"
+      },
+      "replication": {
+        "replicated": true,
+        "repNotifyCondition": "OnChanged"
+      }
+    }
+  ],
+  "hooks": {
+    "postGameplayEffectExecute": {
+      "description": "在 Gameplay Effect 執行後觸發，用於夾值與遊戲邏輯處理",
+      "handlers": [
+        {
+          "attribute": "Health",
+          "logic": "將 Health 夾值於 [0, MaxHealth]。若 Health 到達 0，發送 Event.Combat.Death 事件",
+          "pseudocode": "SetHealth(FMath::Clamp(GetHealth(), 0.0f, GetMaxHealth())); if (GetHealth() <= 0.0f) { SendGameplayEvent(Event.Combat.Death); }"
+        },
+        {
+          "attribute": "Mana",
+          "logic": "將 Mana 夾值於 [0, MaxMana]",
+          "pseudocode": "SetMana(FMath::Clamp(GetMana(), 0.0f, GetMaxMana()));"
+        },
+        {
+          "attribute": "Stamina",
+          "logic": "將 Stamina 夾值於 [0, MaxStamina]",
+          "pseudocode": "SetStamina(FMath::Clamp(GetStamina(), 0.0f, GetMaxStamina()));"
+        }
+      ]
+    },
+    "preAttributeChange": {
+      "description": "在屬性值變更前觸發，用於 UI 顯示的夾值（不影響實際 Modifier 計算）",
+      "handlers": [
+        {
+          "attribute": "Health",
+          "logic": "預先夾值供 UI 顯示",
+          "pseudocode": "NewValue = FMath::Clamp(NewValue, 0.0f, GetMaxHealth());"
+        },
+        {
+          "attribute": "MoveSpeed",
+          "logic": "預先夾值防止極端值",
+          "pseudocode": "NewValue = FMath::Clamp(NewValue, 0.0f, 2000.0f);"
+        }
+      ]
+    },
+    "postAttributeChange": {
+      "description": "在屬性值變更後觸發，用於遊戲邏輯反應",
+      "handlers": [
+        {
+          "attribute": "Health",
+          "logic": "當 Health 到達 0 時觸發死亡流程",
+          "pseudocode": "if (NewValue <= 0.0f && OldValue > 0.0f) { TriggerDeath(); }"
+        }
+      ]
+    }
+  },
+  "replicationSettings": {
+    "mode": "Mixed",
+    "description": "使用 Mixed 模式：完整複製 GE 給擁有者客戶端，最小複製給其他客戶端。適用於大多數玩家角色場景",
+    "alternativeModes": {
+      "full": "完整複製所有 GE 給所有客戶端，適用於競技遊戲需要所有玩家看到所有效果",
+      "minimal": "最小複製，適用於 AI 控制角色以節省頻寬"
+    }
+  }
+}

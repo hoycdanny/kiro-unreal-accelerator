@@ -1,0 +1,162 @@
+{
+  "name": "BT_Patrol",
+  "description": "巡邏行為樹範本，提供標準的 NPC 巡邏邏輯。包含目標追擊、巡邏點循環與閒置等待三個主要分支，適用於敵人巡邏兵、守衛等 AI 角色。",
+  "behaviorTreeType": "BehaviorTree",
+  "root": {
+    "type": "Selector",
+    "name": "Root",
+    "description": "根節點：依優先順序選擇行為分支",
+    "children": [
+      {
+        "type": "Sequence",
+        "name": "ChaseAndAttack",
+        "description": "分支 1：偵測到目標時追擊並攻擊",
+        "decorators": [
+          {
+            "type": "Blackboard",
+            "name": "HasTarget",
+            "description": "檢查黑板中是否存在有效目標",
+            "parameters": {
+              "blackboardKey": "TargetActor",
+              "keyQuery": "IsSet",
+              "notifyObserver": "OnValueChange",
+              "observerAborts": "Both"
+            }
+          }
+        ],
+        "services": [
+          {
+            "type": "UpdatePerception",
+            "name": "UpdatePerception_Chase",
+            "description": "持續更新 AI 感知狀態，追蹤目標位置變化",
+            "parameters": {
+              "interval": 0.5,
+              "randomDeviation": 0.1
+            }
+          }
+        ],
+        "children": [
+          {
+            "type": "Task",
+            "name": "MoveTo_Target",
+            "taskType": "MoveTo",
+            "description": "移動至目標 Actor 位置",
+            "parameters": {
+              "blackboardKey": "TargetActor",
+              "acceptableRadius": 150.0,
+              "observeBlackboardValue": true,
+              "allowStrafe": true
+            }
+          },
+          {
+            "type": "Task",
+            "name": "Attack_Target",
+            "taskType": "Custom",
+            "description": "對目標執行攻擊動作（需自訂 BTTask）",
+            "parameters": {
+              "customTaskClass": "BTTask_Attack",
+              "attackRange": 200.0,
+              "attackCooldown": 1.5
+            }
+          }
+        ]
+      },
+      {
+        "type": "Sequence",
+        "name": "Patrol",
+        "description": "分支 2：有巡邏點時依序巡邏",
+        "decorators": [
+          {
+            "type": "Blackboard",
+            "name": "HasPatrolPoints",
+            "description": "檢查黑板中是否設定巡邏路徑",
+            "parameters": {
+              "blackboardKey": "PatrolIndex",
+              "keyQuery": "IsSet",
+              "notifyObserver": "OnResultChange",
+              "observerAborts": "None"
+            }
+          }
+        ],
+        "services": [
+          {
+            "type": "UpdatePerception",
+            "name": "UpdatePerception_Patrol",
+            "description": "巡邏時持續掃描周圍環境，偵測潛在威脅",
+            "parameters": {
+              "interval": 1.0,
+              "randomDeviation": 0.2
+            }
+          }
+        ],
+        "children": [
+          {
+            "type": "Task",
+            "name": "MoveTo_PatrolPoint",
+            "taskType": "MoveTo",
+            "description": "移動至當前巡邏點位置",
+            "parameters": {
+              "blackboardKey": "TargetLocation",
+              "acceptableRadius": 50.0,
+              "observeBlackboardValue": false,
+              "allowStrafe": false
+            }
+          },
+          {
+            "type": "Task",
+            "name": "Wait_AtPatrolPoint",
+            "taskType": "Wait",
+            "description": "到達巡邏點後等待一段時間",
+            "parameters": {
+              "waitTime": 3.0,
+              "randomDeviation": 1.0
+            }
+          },
+          {
+            "type": "Task",
+            "name": "IncrementPatrolIndex",
+            "taskType": "Custom",
+            "description": "遞增巡邏點索引，循環至下一個巡邏點（需自訂 BTTask）",
+            "parameters": {
+              "customTaskClass": "BTTask_IncrementPatrolIndex",
+              "blackboardKey": "PatrolIndex",
+              "loop": true
+            }
+          }
+        ]
+      },
+      {
+        "type": "Task",
+        "name": "Idle_Wait",
+        "taskType": "Wait",
+        "description": "分支 3：無目標且無巡邏點時原地等待",
+        "decorators": [
+          {
+            "type": "Cooldown",
+            "name": "IdleCooldown",
+            "description": "避免閒置等待過於頻繁地重新評估",
+            "parameters": {
+              "cooldownTime": 2.0
+            }
+          }
+        ],
+        "parameters": {
+          "waitTime": 5.0,
+          "randomDeviation": 2.0
+        }
+      }
+    ]
+  },
+  "requiredBlackboardKeys": [
+    "TargetActor",
+    "TargetLocation",
+    "PatrolIndex"
+  ],
+  "notes": {
+    "customTasks": [
+      "BTTask_Attack：需實作攻擊邏輯，包含動畫播放與傷害判定",
+      "BTTask_IncrementPatrolIndex：需實作巡邏點索引遞增與循環邏輯"
+    ],
+    "usage": "搭配 blackboard-npc 範本使用，確保黑板包含所需鍵值。巡邏點可透過 AI Controller 的 PatrolPoints 陣列設定。"
+  }
+}

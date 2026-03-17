@@ -1,0 +1,58 @@
+{
+  "name": "Windows",
+  "platform": "Windows",
+  "description": "Windows PC 平台設定檔，支援 DX12、SM6、Nanite 與 Lumen，適用於高階 PC 遊戲開發",
+  "targetRHI": "DirectX 12",
+  "shaderFormats": ["PCD3D_SM6", "PCD3D_SM5"],
+  "shaderModel": "SM6",
+  "featureLevel": "SM6",
+  "rendering": {
+    "naniteSupported": true,
+    "lumenSupported": true,
+    "virtualShadowMapsSupported": true,
+    "rayTracingSupported": true,
+    "hardwareRayTracing": true,
+    "meshShadersSupported": true,
+    "variableRateShadingSupported": true,
+    "bindlessResourcesSupported": true
+  },
+  "memory": {
+    "totalBudgetMB": 16384,
+    "textureBudgetMB": 4096,
+    "meshBudgetMB": 2048,
+    "audioBudgetMB": 512,
+    "videoMemoryBudgetMB": 8192,
+    "textureStreamingPoolMB": 2048
+  },
+  "scalability": {
+    "viewDistanceQuality": 3,
+    "antiAliasingQuality": 3,
+    "shadowQuality": 3,
+    "globalIlluminationQuality": 3,
+    "reflectionQuality": 3,
+    "postProcessQuality": 3,
+    "textureQuality": 3,
+    "effectsQuality": 3,
+    "foliageQuality": 3,
+    "shadingQuality": 3
+  },
+  "input": {
+    "supportedDevices": ["Keyboard", "Mouse", "Gamepad", "TouchScreen"],
+    "rawInputSupported": true,
+    "enhancedInputSystem": true
+  },
+  "packaging": {
+    "targetArchitecture": "x64",
+    "supportedOS": ["Windows 10", "Windows 11"],
+    "minOSVersion": "10.0.19041",
+    "redistributables": ["VC++ 2019", "DirectX Runtime"]
+  },
+  "notes": {
+    "recommendations": [
+      "啟用 Nanite 處理高面數靜態網格以獲得最佳效能",
+      "使用 Lumen 取代傳統光照烘焙以支援動態場景",
+      "啟用 Hardware Ray Tracing 提升反射與陰影品質",
+      "設定 Texture Streaming Pool 避免記憶體溢出"
+    ]
+  }
+}

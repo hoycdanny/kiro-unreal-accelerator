@@ -1,0 +1,72 @@
+{
+  "name": "XboxSeriesX",
+  "platform": "XboxSeriesX",
+  "description": "Xbox Series X 平台設定檔，使用 DX12 Ultimate 與 RDNA 2 GPU，支援 Nanite、Lumen 與 Mesh Shaders",
+  "targetRHI": "DirectX 12",
+  "shaderFormats": ["PCD3D_SM6"],
+  "shaderModel": "SM6",
+  "featureLevel": "SM6",
+  "rendering": {
+    "naniteSupported": true,
+    "lumenSupported": true,
+    "virtualShadowMapsSupported": true,
+    "rayTracingSupported": true,
+    "hardwareRayTracing": true,
+    "meshShadersSupported": true,
+    "variableRateShadingSupported": true,
+    "bindlessResourcesSupported": true,
+    "samplerFeedbackSupported": true
+  },
+  "memory": {
+    "totalBudgetMB": 12288,
+    "textureBudgetMB": 3072,
+    "meshBudgetMB": 1536,
+    "audioBudgetMB": 512,
+    "videoMemoryBudgetMB": 6144,
+    "textureStreamingPoolMB": 1536,
+    "splitMemory": true,
+    "fastMemoryMB": 10240,
+    "slowMemoryMB": 6144
+  },
+  "scalability": {
+    "viewDistanceQuality": 3,
+    "antiAliasingQuality": 3,
+    "shadowQuality": 3,
+    "globalIlluminationQuality": 3,
+    "reflectionQuality": 3,
+    "postProcessQuality": 3,
+    "textureQuality": 3,
+    "effectsQuality": 3,
+    "foliageQuality": 3,
+    "shadingQuality": 3
+  },
+  "input": {
+    "supportedDevices": ["XboxWirelessController"],
+    "hapticFeedback": true,
+    "impulseTriggers": true,
+    "shareButton": true
+  },
+  "storage": {
+    "ssdRequired": true,
+    "ioThroughputGBps": 2.4,
+    "compressionSupported": true,
+    "directStorageSupported": true
+  },
+  "packaging": {
+    "targetArchitecture": "x86_64",
+    "maxPackageSizeGB": 100,
+    "chunkingRequired": true,
+    "intelligentDelivery": true,
+    "smartDelivery": true
+  },
+  "notes": {
+    "recommendations": [
+      "利用 DX12 Ultimate 功能集包含 Mesh Shaders 與 VRS",
+      "使用 DirectStorage 加速資產串流載入",
+      "注意 Split Memory 架構，將高頻存取資料放入 Fast Memory",
+      "啟用 Sampler Feedback 最佳化貼圖串流",
+      "支援 Smart Delivery 實現跨世代相容",
+      "確保符合 Microsoft XR（Xbox Requirements）規範"
+    ]
+  }
+}

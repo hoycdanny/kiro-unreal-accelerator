@@ -1,0 +1,154 @@
+{
+  "name": "Android",
+  "platform": "Android",
+  "description": "Android 平台設定檔，支援 Vulkan 與 OpenGL ES，行動 Shader Model，可變記憶體預算與可擴展性設定",
+  "targetRHI": "Vulkan",
+  "shaderFormats": ["SF_VULKAN_ES3_1", "GLSL_ES3_1"],
+  "shaderModel": "SM5_Vulkan",
+  "featureLevel": "ES3_1",
+  "rendering": {
+    "naniteSupported": false,
+    "lumenSupported": false,
+    "virtualShadowMapsSupported": false,
+    "rayTracingSupported": false,
+    "hardwareRayTracing": false,
+    "meshShadersSupported": false,
+    "variableRateShadingSupported": false,
+    "mobileHDR": true,
+    "mobileMultiView": true,
+    "forwardShading": true,
+    "deferredShading": false,
+    "vulkanDesktopFeatures": false
+  },
+  "memory": {
+    "lowEndBudgetMB": 1024,
+    "midEndBudgetMB": 2048,
+    "highEndBudgetMB": 4096,
+    "textureBudgetMB": {
+      "low": 256,
+      "mid": 512,
+      "high": 1024
+    },
+    "meshBudgetMB": {
+      "low": 128,
+      "mid": 256,
+      "high": 512
+    },
+    "audioBudgetMB": 96,
+    "textureStreamingPoolMB": {
+      "low": 192,
+      "mid": 384,
+      "high": 768
+    }
+  },
+  "scalability": {
+    "low": {
+      "viewDistanceQuality": 0,
+      "antiAliasingQuality": 0,
+      "shadowQuality": 0,
+      "globalIlluminationQuality": 0,
+      "reflectionQuality": 0,
+      "postProcessQuality": 0,
+      "textureQuality": 0,
+      "effectsQuality": 0,
+      "foliageQuality": 0,
+      "shadingQuality": 0
+    },
+    "mid": {
+      "viewDistanceQuality": 1,
+      "antiAliasingQuality": 1,
+      "shadowQuality": 1,
+      "globalIlluminationQuality": 0,
+      "reflectionQuality": 1,
+      "postProcessQuality": 1,
+      "textureQuality": 1,
+      "effectsQuality": 1,
+      "foliageQuality": 1,
+      "shadingQuality": 1
+    },
+    "high": {
+      "viewDistanceQuality": 2,
+      "antiAliasingQuality": 2,
+      "shadowQuality": 2,
+      "globalIlluminationQuality": 1,
+      "reflectionQuality": 2,
+      "postProcessQuality": 2,
+      "textureQuality": 2,
+      "effectsQuality": 2,
+      "foliageQuality": 2,
+      "shadingQuality": 2
+    }
+  },
+  "textureSettings": {
+    "maxTextureSize": {
+      "low": 512,
+      "mid": 1024,
+      "high": 2048
+    },
+    "useASTC": true,
+    "useETC2": true,
+    "textureCompression": "ASTC",
+    "fallbackCompression": "ETC2",
+    "mipmapBias": {
+      "low": 2,
+      "mid": 1,
+      "high": 0
+    }
+  },
+  "input": {
+    "supportedDevices": ["TouchScreen", "Gamepad", "Keyboard", "Mouse"],
+    "multiTouchSupported": true,
+    "accelerometerSupported": true,
+    "gyroscopeSupported": true,
+    "hapticFeedback": true
+  },
+  "packaging": {
+    "targetArchitectures": ["arm64-v8a"],
+    "minimumSDKVersion": 28,
+    "targetSDKVersion": 34,
+    "useAAB": true,
+    "useAPK": false,
+    "playAssetDelivery": true,
+    "maxAPKSizeMB": 200,
+    "maxAABSizeMB": 2048
+  },
+  "thermalManagement": {
+    "thermalThrottlingAware": true,
+    "dynamicResolutionEnabled": true,
+    "targetFrameRate": {
+      "low": 30,
+      "mid": 30,
+      "high": 60
+    },
+    "adaptivePerformance": true,
+    "adaptivePerformanceProvider": "Samsung"
+  },
+  "deviceProfiles": {
+    "description": "Android 裝置分級規則，根據 GPU 型號與記憶體自動選擇品質等級",
+    "rules": [
+      {
+        "tier": "high",
+        "conditions": ["GPU:Adreno 7xx", "GPU:Mali-G7xx", "RAM>=8GB"]
+      },
+      {
+        "tier": "mid",
+        "conditions": ["GPU:Adreno 6xx", "GPU:Mali-G5x", "RAM>=4GB"]
+      },
+      {
+        "tier": "low",
+        "conditions": ["default"]
+      }
+    ]
+  },
+  "notes": {
+    "recommendations": [
+      "優先使用 Vulkan API，OpenGL ES 作為後備方案",
+      "實作裝置分級系統根據 GPU 與記憶體自動調整品質",
+      "使用 ASTC 壓縮格式，ETC2 作為不支援 ASTC 裝置的後備",
+      "啟用 Dynamic Resolution 應對不同裝置的效能差異",
+      "使用 Play Asset Delivery 分離大型資產減少初始下載",
+      "注意 Android 碎片化問題，測試多種裝置與 GPU",
+      "使用 AAB 格式取代 APK 以支援 Google Play 的動態交付"
+    ]
+  }
+}

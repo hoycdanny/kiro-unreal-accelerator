@@ -1,0 +1,183 @@
+{
+  "name": "UE5_DependencyRules",
+  "description": "Unreal Engine 5 模組依賴規則，定義允許與禁止的依賴方向、循環依賴防範與模組分層架構",
+  "version": "1.0",
+  "moduleHierarchy": {
+    "description": "模組分層架構，上層模組可依賴下層，反向依賴為違規",
+    "layers": [
+      {
+        "name": "Game",
+        "description": "遊戲邏輯層，最上層模組",
+        "modules": ["GameModule", "GameplayModule"],
+        "canDependOn": ["Feature", "Core", "Engine", "ThirdParty"]
+      },
+      {
+        "name": "Feature",
+        "description": "功能模組層，獨立的遊戲功能",
+        "modules": ["CombatModule", "InventoryModule", "QuestModule", "AIModule", "UIModule"],
+        "canDependOn": ["Core", "Engine", "ThirdParty"]
+      },
+      {
+        "name": "Core",
+        "description": "核心共用層，基礎類別與工具",
+        "modules": ["CoreGameplay", "CoreUI", "CoreUtils"],
+        "canDependOn": ["Engine", "ThirdParty"]
+      },
+      {
+        "name": "Engine",
+        "description": "引擎層，Unreal Engine 內建模組",
+        "modules": ["Engine", "UMG", "AIModule", "NavigationSystem", "GameplayAbilities"],
+        "canDependOn": ["ThirdParty"]
+      },
+      {
+        "name": "ThirdParty",
+        "description": "第三方函式庫層",
+        "modules": [],
+        "canDependOn": []
+      }
+    ]
+  },
+  "allowedDependencies": [
+    {
+      "from": "GameModule",
+      "to": ["CoreGameplay", "CoreUtils", "CombatModule", "InventoryModule"],
+      "description": "遊戲模組可依賴核心層與功能模組"
+    },
+    {
+      "from": "CombatModule",
+      "to": ["CoreGameplay", "CoreUtils", "GameplayAbilities"],
+      "description": "戰鬥模組依賴核心層與 GAS"
+    },
+    {
+      "from": "InventoryModule",
+      "to": ["CoreGameplay", "CoreUtils"],
+      "description": "物品模組僅依賴核心層"
+    },
+    {
+      "from": "UIModule",
+      "to": ["CoreUI", "CoreUtils", "UMG"],
+      "description": "UI 模組依賴 UI 核心與 UMG"
+    },
+    {
+      "from": "AIModule",
+      "to": ["CoreGameplay", "CoreUtils", "NavigationSystem"],
+      "description": "AI 模組依賴核心層與導航系統"
+    }
+  ],
+  "forbiddenDependencies": [
+    {
+      "from": "CoreGameplay",
+      "to": ["GameModule", "CombatModule", "InventoryModule", "QuestModule"],
+      "reason": "核心層不得反向依賴上層遊戲邏輯模組",
+      "severity": "critical"
+    },
+    {
+      "from": "UIModule",
+      "to": ["CombatModule", "InventoryModule", "AIModule"],
+      "reason": "UI 模組不應直接依賴功能模組，應透過介面或事件解耦",
+      "severity": "warning",
+      "suggestion": "使用 Event Dispatcher 或 Interface 進行通訊"
+    },
+    {
+      "from": "CombatModule",
+      "to": ["UIModule"],
+      "reason": "功能模組不應依賴 UI 模組",
+      "severity": "warning",
+      "suggestion": "使用 Gameplay Tag 或 Event 通知 UI 更新"
+    },
+    {
+      "from": "*",
+      "to": ["_Dev"],
+      "reason": "任何模組不得依賴開發者測試模組",
+      "severity": "error"
+    }
+  ],
+  "circularDependencyPrevention": {
+    "enabled": true,
+    "maxChainLength": 5,
+    "detectionStrategy": "DFS",
+    "resolutionStrategies": [
+      {
+        "name": "ExtractInterface",
+        "description": "將共用介面提取至獨立模組，雙方依賴介面模組而非彼此",
+        "applicableWhen": "兩個模組互相呼叫對方的函數",
+        "example": "建立 ICombatInterface 模組，CombatModule 與 AIModule 都依賴此介面"
+      },
+      {
+        "name": "EventDriven",
+        "description": "使用事件系統（Event Dispatcher / Gameplay Message）解耦直接依賴",
+        "applicableWhen": "一個模組需要通知另一個模組狀態變更",
+        "example": "CombatModule 發送 OnDamageDealt 事件，UIModule 訂閱此事件更新血條"
+      },
+      {
+        "name": "DependencyInversion",
+        "description": "反轉依賴方向，讓高層模組定義介面，低層模組實作",
+        "applicableWhen": "低層模組需要呼叫高層模組的功能",
+        "example": "CoreGameplay 定義 IScoreProvider 介面，GameModule 實作此介面"
+      },
+      {
+        "name": "MediatorPattern",
+        "description": "引入中介者模組協調多個模組間的互動",
+        "applicableWhen": "多個模組之間存在複雜的交互依賴",
+        "example": "建立 GameCoordinator 模組統一管理 Combat、Inventory、Quest 的互動"
+      }
+    ]
+  },
+  "blueprintDependencyRules": [
+    {
+      "rule": "noHardReferencesAcrossModules",
+      "description": "跨模組的 Blueprint 參照應使用 Soft Reference 避免載入依賴",
+      "severity": "warning"
+    },
+    {
+      "rule": "noDirectCastAcrossModules",
+      "description": "跨模組不應使用 Direct Cast，應透過 Interface 通訊",
+      "severity": "warning"
+    },
+    {
+      "rule": "limitBlueprintNesting",
+      "maxDepth": 3,
+      "description": "Blueprint 繼承深度不應超過 3 層以維持可讀性",
+      "severity": "info"
+    }
+  ],
+  "assetDependencyRules": [
+    {
+      "rule": "noCircularAssetReferences",
+      "description": "資產之間不得存在循環參照",
+      "severity": "error"
+    },
+    {
+      "rule": "chunkIsolation",
+      "description": "不同 Chunk 的資產應最小化共用依賴以減少包體大小",
+      "severity": "warning"
+    },
+    {
+      "rule": "sharedAssetsInCommonChunk",
+      "description": "多個 Chunk 共用的資產應放入共用 Chunk",
+      "severity": "warning"
+    }
+  ],
+  "validationRules": [
+    {
+      "rule": "layerViolation",
+      "description": "偵測違反模組分層架構的依賴",
+      "severity": "critical"
+    },
+    {
+      "rule": "circularDependency",
+      "description": "偵測模組間的循環依賴",
+      "severity": "critical"
+    },
+    {
+      "rule": "forbiddenDependency",
+      "description": "偵測明確禁止的依賴關係",
+      "severity": "error"
+    },
+    {
+      "rule": "orphanedModule",
+      "description": "偵測無任何依賴者的孤立模組",
+      "severity": "info"
+    }
+  ]
+}

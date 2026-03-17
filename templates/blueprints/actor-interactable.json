@@ -1,0 +1,133 @@
+{
+  "name": "BP_Actor_Interactable",
+  "description": "可互動 Actor Blueprint 範本，提供基礎的互動系統框架。包含碰撞觸發區域、互動提示 Widget 與狀態管理，適用於門、開關、拾取物、NPC 對話觸發等互動物件。",
+  "parentClass": "/Script/Engine.Actor",
+  "components": [
+    {
+      "name": "SceneRoot",
+      "class": "SceneComponent",
+      "attachTo": null,
+      "isRoot": true,
+      "properties": {}
+    },
+    {
+      "name": "MeshComponent",
+      "class": "StaticMeshComponent",
+      "attachTo": "SceneRoot",
+      "properties": {
+        "collisionProfileName": "BlockAll",
+        "castShadow": true,
+        "mobility": "Static"
+      }
+    },
+    {
+      "name": "InteractionTrigger",
+      "class": "BoxComponent",
+      "attachTo": "SceneRoot",
+      "properties": {
+        "boxExtent": { "x": 150.0, "y": 150.0, "z": 150.0 },
+        "collisionProfileName": "OverlapAllDynamic",
+        "generateOverlapEvents": true,
+        "hiddenInGame": true,
+        "lineThickness": 2.0,
+        "shapeColor": { "r": 0, "g": 255, "b": 0, "a": 255 }
+      }
+    },
+    {
+      "name": "InteractionPrompt",
+      "class": "WidgetComponent",
+      "attachTo": "SceneRoot",
+      "properties": {
+        "relativeLocation": { "x": 0, "y": 0, "z": 100.0 },
+        "drawSize": { "x": 200, "y": 50 },
+        "space": "Screen",
+        "bHiddenInGame": true,
+        "bDrawAtDesiredSize": true
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "bIsInteractable",
+      "type": "bool",
+      "default": true,
+      "category": "Interaction",
+      "replication": "Replicated",
+      "description": "是否可以被互動"
+    },
+    {
+      "name": "InteractionText",
+      "type": "FText",
+      "default": "Press E to Interact",
+      "category": "Interaction",
+      "replication": "None",
+      "description": "互動提示文字"
+    },
+    {
+      "name": "bHasBeenUsed",
+      "type": "bool",
+      "default": false,
+      "category": "Interaction",
+      "replication": "Replicated",
+      "description": "是否已被使用過（用於一次性互動物件）"
+    }
+  ],
+  "functions": [
+    {
+      "name": "Interact",
+      "category": "Interaction",
+      "description": "執行互動邏輯，由玩家觸發。子類別應覆寫此函數實作具體互動行為",
+      "inputs": [
+        { "name": "InteractingActor", "type": "Actor" },
+        { "name": "InteractingController", "type": "Controller" }
+      ],
+      "outputs": [
+        { "name": "bSuccess", "type": "bool" }
+      ]
+    },
+    {
+      "name": "EnableInteraction",
+      "category": "Interaction",
+      "description": "啟用互動功能，重新啟用碰撞觸發與提示顯示",
+      "inputs": [],
+      "outputs": []
+    },
+    {
+      "name": "DisableInteraction",
+      "category": "Interaction",
+      "description": "禁用互動功能，隱藏提示並忽略碰撞事件",
+      "inputs": [],
+      "outputs": []
+    }
+  ],
+  "events": [
+    {
+      "name": "OnInteract",
+      "category": "Interaction",
+      "description": "當互動成功執行時觸發",
+      "parameters": [
+        { "name": "InteractingActor", "type": "Actor" }
+      ]
+    },
+    {
+      "name": "OnBeginOverlap",
+      "category": "Collision",
+      "description": "當 Actor 進入互動觸發區域時觸發，用於顯示互動提示",
+      "parameters": [
+        { "name": "OverlappedComponent", "type": "PrimitiveComponent" },
+        { "name": "OtherActor", "type": "Actor" },
+        { "name": "OtherComp", "type": "PrimitiveComponent" }
+      ]
+    },
+    {
+      "name": "OnEndOverlap",
+      "category": "Collision",
+      "description": "當 Actor 離開互動觸發區域時觸發，用於隱藏互動提示",
+      "parameters": [
+        { "name": "OverlappedComponent", "type": "PrimitiveComponent" },
+        { "name": "OtherActor", "type": "Actor" },
+        { "name": "OtherComp", "type": "PrimitiveComponent" }
+      ]
+    }
+  ]
+}

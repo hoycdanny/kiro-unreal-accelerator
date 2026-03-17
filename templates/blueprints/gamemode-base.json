@@ -1,0 +1,138 @@
+{
+  "name": "BP_GameMode_Base",
+  "description": "基礎 GameMode Blueprint 範本，提供標準的比賽流程管理框架。包含比賽開始/結束、玩家死亡處理、重生機制與計分系統，適用於多人對戰或 PvE 遊戲模式。",
+  "parentClass": "/Script/Engine.GameModeBase",
+  "components": [],
+  "variables": [
+    {
+      "name": "DefaultPawnClass",
+      "type": "TSubclassOf<APawn>",
+      "default": null,
+      "category": "GameMode",
+      "replication": "None",
+      "description": "預設玩家 Pawn 類別"
+    },
+    {
+      "name": "ScoreLimit",
+      "type": "int32",
+      "default": 50,
+      "category": "Rules",
+      "replication": "Replicated",
+      "description": "比賽分數上限，達到後結束比賽"
+    },
+    {
+      "name": "TimeLimit",
+      "type": "float",
+      "default": 600.0,
+      "category": "Rules",
+      "replication": "Replicated",
+      "description": "比賽時間限制（秒），0 表示無限制"
+    },
+    {
+      "name": "bMatchInProgress",
+      "type": "bool",
+      "default": false,
+      "category": "State",
+      "replication": "Replicated",
+      "description": "比賽是否正在進行中"
+    },
+    {
+      "name": "CurrentMatchState",
+      "type": "FName",
+      "default": "WaitingToStart",
+      "category": "State",
+      "replication": "Replicated",
+      "description": "當前比賽狀態：WaitingToStart、InProgress、WaitingPostMatch、LeavingMap"
+    }
+  ],
+  "functions": [
+    {
+      "name": "StartMatch",
+      "category": "Match",
+      "description": "開始比賽，設定比賽狀態並通知所有玩家",
+      "inputs": [],
+      "outputs": [
+        { "name": "bSuccess", "type": "bool" }
+      ]
+    },
+    {
+      "name": "EndMatch",
+      "category": "Match",
+      "description": "結束比賽，計算最終結果並廣播比賽結束事件",
+      "inputs": [
+        { "name": "Reason", "type": "FString" }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "HandlePlayerDeath",
+      "category": "Match",
+      "description": "處理玩家死亡事件，更新計分並決定是否觸發重生",
+      "inputs": [
+        { "name": "DeadPlayer", "type": "Controller" },
+        { "name": "KillerPlayer", "type": "Controller" },
+        { "name": "DamageCauser", "type": "Actor" }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "RespawnPlayer",
+      "category": "Match",
+      "description": "重生指定玩家，選擇出生點並生成新的 Pawn",
+      "inputs": [
+        { "name": "PlayerController", "type": "Controller" }
+      ],
+      "outputs": [
+        { "name": "bSuccess", "type": "bool" }
+      ]
+    },
+    {
+      "name": "CalculateScore",
+      "category": "Match",
+      "description": "計算指定玩家或隊伍的分數",
+      "inputs": [
+        { "name": "ScoringPlayer", "type": "Controller" },
+        { "name": "ScoreAmount", "type": "int32" }
+      ],
+      "outputs": [
+        { "name": "NewTotalScore", "type": "int32" }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "OnMatchStarted",
+      "category": "Match",
+      "description": "比賽開始時觸發，用於初始化 UI 與遊戲邏輯",
+      "parameters": []
+    },
+    {
+      "name": "OnMatchEnded",
+      "category": "Match",
+      "description": "比賽結束時觸發，用於顯示結算畫面",
+      "parameters": [
+        { "name": "WinnerController", "type": "Controller" },
+        { "name": "Reason", "type": "FString" }
+      ]
+    },
+    {
+      "name": "OnPlayerDied",
+      "category": "Match",
+      "description": "玩家死亡時觸發，用於更新計分板與擊殺通知",
+      "parameters": [
+        { "name": "DeadPlayer", "type": "Controller" },
+        { "name": "KillerPlayer", "type": "Controller" }
+      ]
+    },
+    {
+      "name": "OnScoreChanged",
+      "category": "Match",
+      "description": "分數變更時觸發，用於更新 UI 與檢查勝利條件",
+      "parameters": [
+        { "name": "ScoringPlayer", "type": "Controller" },
+        { "name": "NewScore", "type": "int32" },
+        { "name": "ScoreLimit", "type": "int32" }
+      ]
+    }
+  ]
+}

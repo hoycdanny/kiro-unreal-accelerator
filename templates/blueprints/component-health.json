@@ -1,0 +1,126 @@
+{
+  "name": "BP_Component_Health",
+  "description": "生命值元件 Blueprint 範本，提供可重用的生命值管理系統。可附加至任何 Actor 以賦予其生命值、傷害處理、治療與無敵狀態功能。支援網路複製與事件驅動的 UI 更新。",
+  "parentClass": "/Script/Engine.ActorComponent",
+  "components": [],
+  "variables": [
+    {
+      "name": "CurrentHealth",
+      "type": "float",
+      "default": 100.0,
+      "category": "Health",
+      "replication": "RepNotify",
+      "description": "當前生命值，變更時觸發 OnRep 通知"
+    },
+    {
+      "name": "MaxHealth",
+      "type": "float",
+      "default": 100.0,
+      "category": "Health",
+      "replication": "Replicated",
+      "description": "最大生命值上限"
+    },
+    {
+      "name": "bIsDead",
+      "type": "bool",
+      "default": false,
+      "category": "Health",
+      "replication": "Replicated",
+      "description": "是否已死亡"
+    },
+    {
+      "name": "bIsInvulnerable",
+      "type": "bool",
+      "default": false,
+      "category": "Health",
+      "replication": "Replicated",
+      "description": "是否處於無敵狀態，無敵時不受傷害"
+    }
+  ],
+  "functions": [
+    {
+      "name": "TakeDamage",
+      "category": "Health",
+      "description": "處理傷害，扣除生命值。無敵狀態下忽略傷害，生命值歸零時觸發死亡",
+      "inputs": [
+        { "name": "DamageAmount", "type": "float" },
+        { "name": "DamageInstigator", "type": "Controller" },
+        { "name": "DamageCauser", "type": "Actor" }
+      ],
+      "outputs": [
+        { "name": "ActualDamage", "type": "float" }
+      ]
+    },
+    {
+      "name": "Heal",
+      "category": "Health",
+      "description": "治療指定量的生命值，不超過 MaxHealth 上限",
+      "inputs": [
+        { "name": "HealAmount", "type": "float" },
+        { "name": "HealInstigator", "type": "Controller" }
+      ],
+      "outputs": [
+        { "name": "ActualHeal", "type": "float" }
+      ]
+    },
+    {
+      "name": "SetMaxHealth",
+      "category": "Health",
+      "description": "設定最大生命值，可選擇是否同時調整當前生命值比例",
+      "inputs": [
+        { "name": "NewMaxHealth", "type": "float" },
+        { "name": "bAdjustCurrentHealth", "type": "bool" }
+      ],
+      "outputs": []
+    },
+    {
+      "name": "GetHealthPercent",
+      "category": "Health",
+      "description": "取得當前生命值百分比（0.0 ~ 1.0），用於 UI 進度條綁定",
+      "inputs": [],
+      "outputs": [
+        { "name": "HealthPercent", "type": "float" }
+      ]
+    }
+  ],
+  "events": [
+    {
+      "name": "OnHealthChanged",
+      "category": "Health",
+      "description": "當生命值變更時觸發，提供舊值與新值供 UI 更新",
+      "parameters": [
+        { "name": "OldHealth", "type": "float" },
+        { "name": "NewHealth", "type": "float" },
+        { "name": "MaxHealth", "type": "float" }
+      ]
+    },
+    {
+      "name": "OnDeath",
+      "category": "Health",
+      "description": "當生命值歸零時觸發，通知擁有者 Actor 執行死亡邏輯",
+      "parameters": [
+        { "name": "KillingInstigator", "type": "Controller" },
+        { "name": "DamageCauser", "type": "Actor" }
+      ]
+    },
+    {
+      "name": "OnDamageReceived",
+      "category": "Health",
+      "description": "當受到傷害時觸發（無論是否無敵），用於播放受擊特效或音效",
+      "parameters": [
+        { "name": "DamageAmount", "type": "float" },
+        { "name": "DamageInstigator", "type": "Controller" },
+        { "name": "DamageCauser", "type": "Actor" }
+      ]
+    },
+    {
+      "name": "OnHealed",
+      "category": "Health",
+      "description": "當被治療時觸發，用於播放治療特效或 UI 提示",
+      "parameters": [
+        { "name": "HealAmount", "type": "float" },
+        { "name": "HealInstigator", "type": "Controller" }
+      ]
+    }
+  ]
+}

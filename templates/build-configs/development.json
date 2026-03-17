@@ -1,0 +1,64 @@
+{
+  "name": "Development",
+  "description": "開發建置配置，啟用除錯符號、編輯器支援、完整日誌與斷言檢查，適用於日常開發與除錯",
+  "buildConfiguration": "Development",
+  "settings": {
+    "debugSymbols": true,
+    "optimizationLevel": "Debug",
+    "editorSupport": true,
+    "logging": {
+      "enabled": true,
+      "verbosity": "Verbose",
+      "categories": ["LogTemp", "LogGameplay", "LogAI", "LogAnimation", "LogBlueprint"]
+    },
+    "assertions": {
+      "check": true,
+      "checkSlow": true,
+      "verify": true,
+      "ensure": true
+    },
+    "debugDrawing": true,
+    "stats": true,
+    "profiling": true,
+    "hotReload": true,
+    "liveCodeEditing": true,
+    "incrementalBuild": true
+  },
+  "compiler": {
+    "useUnityBuild": true,
+    "usePCH": true,
+    "useSharedPCH": true,
+    "useAdaptiveUnityBuild": true,
+    "minFilesUsingPrecompiledHeader": 6,
+    "warningsAsErrors": false,
+    "shadowVariableWarnings": true,
+    "undefinedIdentifierWarnings": true
+  },
+  "linker": {
+    "stripSymbols": false,
+    "useLTO": false,
+    "generateMapFile": false
+  },
+  "packaging": {
+    "usePakFile": false,
+    "useIoStore": false,
+    "compressAssets": false,
+    "includeDebugFiles": true,
+    "includeCrashReporter": true
+  },
+  "defines": [
+    "UE_BUILD_DEVELOPMENT=1",
+    "WITH_EDITOR=1",
+    "WITH_ENGINE=1",
+    "WITH_UNREAL_DEVELOPER_TOOLS=1",
+    "WITH_PLUGIN_SUPPORT=1"
+  ],
+  "notes": {
+    "usage": "日常開發使用，提供完整的除錯功能與編輯器整合。建置速度較快但執行效能低於 Shipping。",
+    "recommendations": [
+      "啟用 Hot Reload 加速迭代",
+      "使用 Verbose 日誌等級追蹤問題",
+      "搭配 Visual Studio / Rider 的除錯器使用"
+    ]
+  }
+}

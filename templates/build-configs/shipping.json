@@ -1,0 +1,69 @@
+{
+  "name": "Shipping",
+  "description": "發行建置配置，最大化效能最佳化，移除所有除錯功能與日誌，適用於最終發行版本",
+  "buildConfiguration": "Shipping",
+  "settings": {
+    "debugSymbols": false,
+    "optimizationLevel": "Speed",
+    "editorSupport": false,
+    "logging": {
+      "enabled": false,
+      "verbosity": "NoLogging",
+      "categories": []
+    },
+    "assertions": {
+      "check": false,
+      "checkSlow": false,
+      "verify": false,
+      "ensure": false
+    },
+    "debugDrawing": false,
+    "stats": false,
+    "profiling": false,
+    "hotReload": false,
+    "liveCodeEditing": false,
+    "incrementalBuild": false
+  },
+  "compiler": {
+    "useUnityBuild": true,
+    "usePCH": true,
+    "useSharedPCH": true,
+    "useAdaptiveUnityBuild": true,
+    "minFilesUsingPrecompiledHeader": 6,
+    "warningsAsErrors": true,
+    "shadowVariableWarnings": true,
+    "undefinedIdentifierWarnings": true
+  },
+  "linker": {
+    "stripSymbols": true,
+    "useLTO": true,
+    "generateMapFile": false
+  },
+  "packaging": {
+    "usePakFile": true,
+    "useIoStore": true,
+    "compressAssets": true,
+    "includeDebugFiles": false,
+    "includeCrashReporter": false,
+    "generateChunks": true,
+    "encryptPakFiles": true,
+    "signPakFiles": true
+  },
+  "defines": [
+    "UE_BUILD_SHIPPING=1",
+    "WITH_EDITOR=0",
+    "WITH_ENGINE=1",
+    "WITH_UNREAL_DEVELOPER_TOOLS=0",
+    "WITH_PLUGIN_SUPPORT=0",
+    "UE_BUILD_SHIPPING_WITH_EDITOR=0"
+  ],
+  "notes": {
+    "usage": "最終發行版本使用，所有除錯功能已移除，效能最佳化至最高。不可用於開發或測試。",
+    "recommendations": [
+      "發行前務必執行完整的 QA 測試",
+      "確認所有 Shader 已預編譯",
+      "驗證 Pak 檔案完整性與加密設定",
+      "確認 Crash Reporter 已移除以減少包體大小"
+    ]
+  }
+}

@@ -1,0 +1,209 @@
+{
+  "name": "M_PBR_Standard",
+  "description": "標準 PBR 材質範本，使用 DefaultLit 著色模型與 Opaque 混合模式。適用於大多數不透明表面如石材、木材、金屬等，支援 ORM 合併貼圖工作流與 UV 平鋪控制。",
+  "shadingModel": "DefaultLit",
+  "blendMode": "Opaque",
+  "materialDomain": "Surface",
+  "twoSided": false,
+  "parameters": [
+    {
+      "name": "BaseColor",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "description": "基礎顏色貼圖（sRGB），定義表面的漫反射顏色"
+    },
+    {
+      "name": "Normal",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "samplerType": "Normal",
+      "description": "法線貼圖（Linear），用於模擬表面細節凹凸"
+    },
+    {
+      "name": "ORM",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Textures",
+      "samplerType": "Masks",
+      "description": "ORM 合併貼圖（Linear）：R=Ambient Occlusion, G=Roughness, B=Metallic"
+    },
+    {
+      "name": "Tint",
+      "type": "LinearColor",
+      "default": [1.0, 1.0, 1.0, 1.0],
+      "group": "Adjustments",
+      "description": "顏色色調乘數，用於在不更換貼圖的情況下調整整體色調"
+    },
+    {
+      "name": "UVTiling",
+      "type": "Vector2D",
+      "default": [1.0, 1.0],
+      "group": "UV",
+      "description": "UV 平鋪倍數，控制貼圖在表面上的重複次數"
+    },
+    {
+      "name": "RoughnessMultiplier",
+      "type": "Scalar",
+      "default": 1.0,
+      "range": [0.0, 2.0],
+      "group": "Adjustments",
+      "description": "粗糙度乘數，用於全域調整表面粗糙度"
+    },
+    {
+      "name": "MetallicMultiplier",
+      "type": "Scalar",
+      "default": 1.0,
+      "range": [0.0, 1.0],
+      "group": "Adjustments",
+      "description": "金屬度乘數，用於全域調整表面金屬感"
+    },
+    {
+      "name": "NormalIntensity",
+      "type": "Scalar",
+      "default": 1.0,
+      "range": [0.0, 2.0],
+      "group": "Adjustments",
+      "description": "法線強度，控制表面凹凸的明顯程度"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "TexCoord",
+      "type": "TextureCoordinate",
+      "description": "UV 座標節點，接收 UVTiling 參數控制平鋪",
+      "properties": {
+        "coordinateIndex": 0,
+        "uTiling": "UVTiling.X",
+        "vTiling": "UVTiling.Y"
+      }
+    },
+    {
+      "id": "BaseColorSample",
+      "type": "TextureSample",
+      "description": "取樣基礎顏色貼圖",
+      "properties": {
+        "texture": "BaseColor",
+        "samplerType": "Color"
+      },
+      "inputs": {
+        "UVs": "TexCoord.Output"
+      }
+    },
+    {
+      "id": "TintMultiply",
+      "type": "Multiply",
+      "description": "將基礎顏色與 Tint 色調相乘",
+      "inputs": {
+        "A": "BaseColorSample.RGB",
+        "B": "Tint"
+      },
+      "connection": {
+        "target": "Material.BaseColor"
+      }
+    },
+    {
+      "id": "NormalSample",
+      "type": "TextureSample",
+      "description": "取樣法線貼圖",
+      "properties": {
+        "texture": "Normal",
+        "samplerType": "Normal"
+      },
+      "inputs": {
+        "UVs": "TexCoord.Output"
+      }
+    },
+    {
+      "id": "FlattenNormal",
+      "type": "FlattenNormal",
+      "description": "根據 NormalIntensity 調整法線強度",
+      "inputs": {
+        "Normal": "NormalSample.RGB",
+        "Flatness": "NormalIntensity"
+      },
+      "connection": {
+        "target": "Material.Normal"
+      }
+    },
+    {
+      "id": "ORMSample",
+      "type": "TextureSample",
+      "description": "取樣 ORM 合併貼圖（R=AO, G=Roughness, B=Metallic）",
+      "properties": {
+        "texture": "ORM",
+        "samplerType": "Masks"
+      },
+      "inputs": {
+        "UVs": "TexCoord.Output"
+      }
+    },
+    {
+      "id": "AOOutput",
+      "type": "ComponentMask",
+      "description": "從 ORM 貼圖提取 R 通道作為 Ambient Occlusion",
+      "properties": {
+        "r": true,
+        "g": false,
+        "b": false
+      },
+      "inputs": {
+        "Input": "ORMSample.RGB"
+      },
+      "connection": {
+        "target": "Material.AmbientOcclusion"
+      }
+    },
+    {
+      "id": "RoughnessExtract",
+      "type": "ComponentMask",
+      "description": "從 ORM 貼圖提取 G 通道作為粗糙度",
+      "properties": {
+        "r": false,
+        "g": true,
+        "b": false
+      },
+      "inputs": {
+        "Input": "ORMSample.RGB"
+      }
+    },
+    {
+      "id": "RoughnessMultiply",
+      "type": "Multiply",
+      "description": "將粗糙度與 RoughnessMultiplier 相乘",
+      "inputs": {
+        "A": "RoughnessExtract.Output",
+        "B": "RoughnessMultiplier"
+      },
+      "connection": {
+        "target": "Material.Roughness"
+      }
+    },
+    {
+      "id": "MetallicExtract",
+      "type": "ComponentMask",
+      "description": "從 ORM 貼圖提取 B 通道作為金屬度",
+      "properties": {
+        "r": false,
+        "g": false,
+        "b": true
+      },
+      "inputs": {
+        "Input": "ORMSample.RGB"
+      }
+    },
+    {
+      "id": "MetallicMultiply",
+      "type": "Multiply",
+      "description": "將金屬度與 MetallicMultiplier 相乘",
+      "inputs": {
+        "A": "MetallicExtract.Output",
+        "B": "MetallicMultiplier"
+      },
+      "connection": {
+        "target": "Material.Metallic"
+      }
+    }
+  ]
+}

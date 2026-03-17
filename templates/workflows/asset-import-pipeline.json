@@ -1,0 +1,82 @@
+{
+  "id": "asset-import-pipeline",
+  "name": "Asset Import Pipeline",
+  "description": "資產匯入管線工作流，自動化資產匯入、類型偵測、預設套用、Nanite 相容性驗證與品質分析的完整流程。適用於批次匯入大量資產時確保一致的品質標準。",
+  "steps": [
+    {
+      "id": "import-assets",
+      "name": "匯入資產",
+      "action": "manage_asset",
+      "params": {
+        "action": "import",
+        "sourcePath": "${sourcePath}",
+        "destinationPath": "${destinationPath}",
+        "overwrite": false
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "detect-asset-type",
+      "name": "偵測資產類型",
+      "action": "AssetAnalyzer.detectAssetType",
+      "params": {
+        "assetPath": "${destinationPath}"
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "validate-nanite",
+      "name": "驗證 Nanite 相容性",
+      "action": "AssetAnalyzer.validateNaniteCompatibility",
+      "params": {
+        "assetPath": "${destinationPath}"
+      },
+      "condition": {
+        "field": "assetType",
+        "operator": "eq",
+        "value": "StaticMesh"
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "apply-preset",
+      "name": "套用資產預設",
+      "action": "AssetAnalyzer.batchApplyPreset",
+      "params": {
+        "assetPaths": ["${destinationPath}"],
+        "presetId": "${presetId}"
+      },
+      "onFailure": "retry",
+      "retryCount": 2
+    },
+    {
+      "id": "analyze-asset",
+      "name": "分析資產品質",
+      "action": "AssetAnalyzer.analyzeAsset",
+      "params": {
+        "assetPath": "${destinationPath}"
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "validate-asset",
+      "name": "驗證資產設定",
+      "action": "manage_asset",
+      "params": {
+        "action": "validate",
+        "assetPath": "${destinationPath}"
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "generate-report",
+      "name": "產出匯入報告",
+      "action": "ReportGenerator.generateAssetReport",
+      "params": {
+        "format": "markdown",
+        "includeRecommendations": true
+      },
+      "onFailure": "skip"
+    }
+  ]
+}

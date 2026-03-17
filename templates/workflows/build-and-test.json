@@ -1,0 +1,76 @@
+{
+  "id": "build-and-test",
+  "name": "Build and Test",
+  "description": "建置與測試工作流，自動化專案建置、Shader 編譯、自動化測試執行與建置報告產出的完整流程。適用於持續整合或版本發布前的驗證。",
+  "steps": [
+    {
+      "id": "save-all",
+      "name": "儲存所有變更",
+      "action": "control_editor",
+      "params": {
+        "action": "save_all"
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "check-compatibility",
+      "name": "平台相容性檢查",
+      "action": "CompatibilityChecker.checkPlatform",
+      "params": {
+        "platform": "${targetPlatform}",
+        "checkShaders": true,
+        "checkMemory": true
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "build-project",
+      "name": "建置專案",
+      "action": "system_control",
+      "params": {
+        "action": "run_ubt",
+        "configuration": "${buildConfiguration}",
+        "platform": "${targetPlatform}"
+      },
+      "condition": {
+        "field": "canBuild",
+        "operator": "eq",
+        "value": true
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "run-tests",
+      "name": "執行自動化測試",
+      "action": "system_control",
+      "params": {
+        "action": "run_tests",
+        "filter": "${testFilter}",
+        "configuration": "${buildConfiguration}"
+      },
+      "onFailure": "retry",
+      "retryCount": 2
+    },
+    {
+      "id": "code-quality-check",
+      "name": "程式碼品質檢查",
+      "action": "CodeQualityAnalyzer.analyzeProject",
+      "params": {
+        "checkNaming": true,
+        "checkCircularDeps": true,
+        "checkBlueprintBalance": true
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "generate-build-report",
+      "name": "產出建置報告",
+      "action": "ReportGenerator.generateDashboard",
+      "params": {
+        "format": "markdown",
+        "sections": ["build", "tests", "codeQuality", "compatibility"]
+      },
+      "onFailure": "skip"
+    }
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "name": "M_Landscape_Blend",
+  "description": "地形圖層混合材質範本，使用 DefaultLit 著色模型。支援多圖層（草地、岩石、沙地、雪地）的高度混合，適用於 Landscape 系統的自動材質繪製。",
+  "shadingModel": "DefaultLit",
+  "blendMode": "Opaque",
+  "materialDomain": "Surface",
+  "twoSided": false,
+  "parameters": [
+    {
+      "name": "GrassBaseColor",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Grass Layer",
+      "description": "草地圖層基礎顏色貼圖"
+    },
+    {
+      "name": "GrassNormal",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Grass Layer",
+      "samplerType": "Normal",
+      "description": "草地圖層法線貼圖"
+    },
+    {
+      "name": "GrassRoughness",
+      "type": "Scalar",
+      "default": 0.8,
+      "range": [0.0, 1.0],
+      "group": "Grass Layer",
+      "description": "草地圖層粗糙度"
+    },
+    {
+      "name": "GrassTiling",
+      "type": "Scalar",
+      "default": 4.0,
+      "range": [0.1, 32.0],
+      "group": "Grass Layer",
+      "description": "草地貼圖 UV 平鋪倍數"
+    },
+    {
+      "name": "RockBaseColor",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Rock Layer",
+      "description": "岩石圖層基礎顏色貼圖"
+    },
+    {
+      "name": "RockNormal",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Rock Layer",
+      "samplerType": "Normal",
+      "description": "岩石圖層法線貼圖"
+    }
+,
+    {
+      "name": "RockRoughness",
+      "type": "Scalar",
+      "default": 0.9,
+      "range": [0.0, 1.0],
+      "group": "Rock Layer",
+      "description": "岩石圖層粗糙度"
+    },
+    {
+      "name": "RockTiling",
+      "type": "Scalar",
+      "default": 2.0,
+      "range": [0.1, 32.0],
+      "group": "Rock Layer",
+      "description": "岩石貼圖 UV 平鋪倍數"
+    },
+    {
+      "name": "SandBaseColor",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Sand Layer",
+      "description": "沙地圖層基礎顏色貼圖"
+    },
+    {
+      "name": "SandNormal",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Sand Layer",
+      "samplerType": "Normal",
+      "description": "沙地圖層法線貼圖"
+    },
+    {
+      "name": "SandRoughness",
+      "type": "Scalar",
+      "default": 0.7,
+      "range": [0.0, 1.0],
+      "group": "Sand Layer",
+      "description": "沙地圖層粗糙度"
+    },
+    {
+      "name": "SandTiling",
+      "type": "Scalar",
+      "default": 6.0,
+      "range": [0.1, 32.0],
+      "group": "Sand Layer",
+      "description": "沙地貼圖 UV 平鋪倍數"
+    },
+    {
+      "name": "SnowBaseColor",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Snow Layer",
+      "description": "雪地圖層基礎顏色貼圖"
+    },
+    {
+      "name": "SnowNormal",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Snow Layer",
+      "samplerType": "Normal",
+      "description": "雪地圖層法線貼圖"
+    },
+    {
+      "name": "SnowRoughness",
+      "type": "Scalar",
+      "default": 0.3,
+      "range": [0.0, 1.0],
+      "group": "Snow Layer",
+      "description": "雪地圖層粗糙度"
+    },
+    {
+      "name": "SnowTiling",
+      "type": "Scalar",
+      "default": 4.0,
+      "range": [0.1, 32.0],
+      "group": "Snow Layer",
+      "description": "雪地貼圖 UV 平鋪倍數"
+    },
+    {
+      "name": "HeightBlendSharpness",
+      "type": "Scalar",
+      "default": 0.2,
+      "range": [0.01, 1.0],
+      "group": "Blending",
+      "description": "高度混合銳利度，值越小過渡越銳利"
+    },
+    {
+      "name": "MacroVariationTexture",
+      "type": "Texture2D",
+      "default": null,
+      "group": "Macro",
+      "description": "巨觀變化貼圖，用於打破大面積地形的重複感"
+    },
+    {
+      "name": "MacroVariationTiling",
+      "type": "Scalar",
+      "default": 0.01,
+      "range": [0.001, 0.1],
+      "group": "Macro",
+      "description": "巨觀變化貼圖的 UV 平鋪倍數（通常非常小以覆蓋大面積）"
+    },
+    {
+      "name": "MacroVariationIntensity",
+      "type": "Scalar",
+      "default": 0.3,
+      "range": [0.0, 1.0],
+      "group": "Macro",
+      "description": "巨觀變化強度"
+    }
+  ],
+
+  "nodes": [
+    {
+      "id": "LandscapeLayerBlend",
+      "type": "LandscapeLayerBlend",
+      "description": "地形圖層混合節點，根據繪製權重混合各圖層",
+      "properties": {
+        "blendType": "LB_HeightBlend",
+        "layers": [
+          { "layerName": "Grass", "previewWeight": 1.0 },
+          { "layerName": "Rock", "previewWeight": 0.0 },
+          { "layerName": "Sand", "previewWeight": 0.0 },
+          { "layerName": "Snow", "previewWeight": 0.0 }
+        ]
+      }
+    },
+    {
+      "id": "GrassTexCoord",
+      "type": "LandscapeLayerCoords",
+      "description": "草地圖層 UV 座標",
+      "properties": {
+        "mappingScale": "GrassTiling"
+      }
+    },
+    {
+      "id": "GrassBaseColorSample",
+      "type": "TextureSample",
+      "description": "取樣草地基礎顏色",
+      "properties": {
+        "texture": "GrassBaseColor",
+        "samplerType": "Color"
+      },
+      "inputs": {
+        "UVs": "GrassTexCoord.Output"
+      }
+    },
+    {
+      "id": "GrassNormalSample",
+      "type": "TextureSample",
+      "description": "取樣草地法線",
+      "properties": {
+        "texture": "GrassNormal",
+        "samplerType": "Normal"
+      },
+      "inputs": {
+        "UVs": "GrassTexCoord.Output"
+      }
+    },
+    {
+      "id": "RockTexCoord",
+      "type": "LandscapeLayerCoords",
+      "description": "岩石圖層 UV 座標",
+      "properties": {
+        "mappingScale": "RockTiling"
+      }
+    },
+    {
+      "id": "RockBaseColorSample",
+      "type": "TextureSample",
+      "description": "取樣岩石基礎顏色",
+      "properties": {
+        "texture": "RockBaseColor",
+        "samplerType": "Color"
+      },
+      "inputs": {
+        "UVs": "RockTexCoord.Output"
+      }
+    },
+    {
+      "id": "RockNormalSample",
+      "type": "TextureSample",
+      "description": "取樣岩石法線",
+      "properties": {
+        "texture": "RockNormal",
+        "samplerType": "Normal"
+      },
+      "inputs": {
+        "UVs": "RockTexCoord.Output"
+      }
+    },
+    {
+      "id": "SandTexCoord",
+      "type": "LandscapeLayerCoords",
+      "description": "沙地圖層 UV 座標",
+      "properties": {
+        "mappingScale": "SandTiling"
+      }
+    },
+    {
+      "id": "SandBaseColorSample",
+      "type": "TextureSample",
+      "description": "取樣沙地基礎顏色",
+      "properties": {
+        "texture": "SandBaseColor",
+        "samplerType": "Color"
+      },
+      "inputs": {
+        "UVs": "SandTexCoord.Output"
+      }
+    },
+    {
+      "id": "SandNormalSample",
+      "type": "TextureSample",
+      "description": "取樣沙地法線",
+      "properties": {
+        "texture": "SandNormal",
+        "samplerType": "Normal"
+      },
+      "inputs": {
+        "UVs": "SandTexCoord.Output"
+      }
+    },
+    {
+      "id": "SnowTexCoord",
+      "type": "LandscapeLayerCoords",
+      "description": "雪地圖層 UV 座標",
+      "properties": {
+        "mappingScale": "SnowTiling"
+      }
+    },
+    {
+      "id": "SnowBaseColorSample",
+      "type": "TextureSample",
+      "description": "取樣雪地基礎顏色",
+      "properties": {
+        "texture": "SnowBaseColor",
+        "samplerType": "Color"
+      },
+      "inputs": {
+        "UVs": "SnowTexCoord.Output"
+      }
+    },
+    {
+      "id": "SnowNormalSample",
+      "type": "TextureSample",
+      "description": "取樣雪地法線",
+      "properties": {
+        "texture": "SnowNormal",
+        "samplerType": "Normal"
+      },
+      "inputs": {
+        "UVs": "SnowTexCoord.Output"
+      }
+    },
+    {
+      "id": "BaseColorBlend",
+      "type": "LandscapeLayerBlend",
+      "description": "混合各圖層的基礎顏色",
+      "inputs": {
+        "Grass": "GrassBaseColorSample.RGB",
+        "Rock": "RockBaseColorSample.RGB",
+        "Sand": "SandBaseColorSample.RGB",
+        "Snow": "SnowBaseColorSample.RGB"
+      },
+      "connection": {
+        "target": "Material.BaseColor"
+      }
+    },
+    {
+      "id": "NormalBlend",
+      "type": "LandscapeLayerBlend",
+      "description": "混合各圖層的法線",
+      "inputs": {
+        "Grass": "GrassNormalSample.RGB",
+        "Rock": "RockNormalSample.RGB",
+        "Sand": "SandNormalSample.RGB",
+        "Snow": "SnowNormalSample.RGB"
+      },
+      "connection": {
+        "target": "Material.Normal"
+      }
+    },
+    {
+      "id": "RoughnessBlend",
+      "type": "LandscapeLayerBlend",
+      "description": "混合各圖層的粗糙度",
+      "inputs": {
+        "Grass": "GrassRoughness",
+        "Rock": "RockRoughness",
+        "Sand": "SandRoughness",
+        "Snow": "SnowRoughness"
+      },
+      "connection": {
+        "target": "Material.Roughness"
+      }
+    },
+    {
+      "id": "MacroVariationSample",
+      "type": "TextureSample",
+      "description": "取樣巨觀變化貼圖，用於打破大面積重複",
+      "properties": {
+        "texture": "MacroVariationTexture",
+        "samplerType": "Masks"
+      },
+      "inputs": {
+        "UVs": "MacroVariationTiling"
+      }
+    },
+    {
+      "id": "MacroVariationLerp",
+      "type": "Lerp",
+      "description": "根據強度混合巨觀變化效果",
+      "inputs": {
+        "A": 1.0,
+        "B": "MacroVariationSample.R",
+        "Alpha": "MacroVariationIntensity"
+      },
+      "note": "輸出乘以 BaseColorBlend 結果以產生巨觀變化"
+    }
+  ]
+}

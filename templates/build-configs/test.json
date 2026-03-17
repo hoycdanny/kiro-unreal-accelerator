@@ -1,0 +1,80 @@
+{
+  "name": "Test",
+  "description": "測試建置配置，啟用自動化測試框架與效能分析，保留部分除錯功能，適用於 QA 與自動化測試",
+  "buildConfiguration": "Test",
+  "settings": {
+    "debugSymbols": true,
+    "optimizationLevel": "Development",
+    "editorSupport": false,
+    "logging": {
+      "enabled": true,
+      "verbosity": "Warning",
+      "categories": ["LogAutomationTest", "LogFunctionalTest", "LogTemp"]
+    },
+    "assertions": {
+      "check": true,
+      "checkSlow": false,
+      "verify": true,
+      "ensure": true
+    },
+    "debugDrawing": false,
+    "stats": true,
+    "profiling": true,
+    "hotReload": false,
+    "liveCodeEditing": false,
+    "incrementalBuild": true
+  },
+  "automation": {
+    "enableAutomationTests": true,
+    "enableFunctionalTests": true,
+    "enablePerformanceCapture": true,
+    "testTimeout": 300,
+    "screenshotOnFailure": true,
+    "reportFormat": "json",
+    "categories": [
+      "Product.Functional",
+      "Product.Performance",
+      "Product.Stress",
+      "Engine.Smoke"
+    ]
+  },
+  "compiler": {
+    "useUnityBuild": true,
+    "usePCH": true,
+    "useSharedPCH": true,
+    "useAdaptiveUnityBuild": true,
+    "minFilesUsingPrecompiledHeader": 6,
+    "warningsAsErrors": true,
+    "shadowVariableWarnings": true,
+    "undefinedIdentifierWarnings": true
+  },
+  "linker": {
+    "stripSymbols": false,
+    "useLTO": false,
+    "generateMapFile": true
+  },
+  "packaging": {
+    "usePakFile": true,
+    "useIoStore": false,
+    "compressAssets": false,
+    "includeDebugFiles": true,
+    "includeCrashReporter": true
+  },
+  "defines": [
+    "UE_BUILD_TEST=1",
+    "WITH_EDITOR=0",
+    "WITH_ENGINE=1",
+    "WITH_UNREAL_DEVELOPER_TOOLS=1",
+    "WITH_AUTOMATION_TESTS=1",
+    "WITH_DEV_AUTOMATION_TESTS=1"
+  ],
+  "notes": {
+    "usage": "QA 與自動化測試使用，提供測試框架整合與效能分析功能。建置效能介於 Development 與 Shipping 之間。",
+    "recommendations": [
+      "搭配 Gauntlet 自動化測試框架使用",
+      "啟用 Screenshot Comparison 進行視覺回歸測試",
+      "使用 Performance Capture 收集效能基準數據",
+      "設定 CI/CD 管線自動執行測試建置"
+    ]
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "name": "GE_Buff_SpeedBoost",
+  "description": "增益 Gameplay Effect 範本（移動速度提升），使用 HasDuration 持續時間在指定秒數內提升目標屬性。支援堆疊機制、授予狀態 Tag 與 Gameplay Cue 視覺回饋。可作為各類增益效果的基礎範本。",
+  "effectType": "GameplayEffect",
+  "duration": {
+    "type": "HasDuration",
+    "value": 10.0,
+    "description": "增益持續 10 秒，到期後自動移除"
+  },
+  "period": {
+    "enabled": false,
+    "value": 0.0,
+    "description": "非週期性效果，設為 0 表示不週期觸發。若需週期性回復可設定間隔秒數"
+  },
+  "modifiers": [
+    {
+      "attribute": "MoveSpeed",
+      "operation": "Multiply",
+      "description": "將移動速度乘以 1.3（提升 30%）",
+      "magnitude": {
+        "calculationType": "ScalableFloat",
+        "scalableFloat": {
+          "value": 1.3,
+          "curveTable": null,
+          "curveRow": null,
+          "description": "速度倍率，可搭配 CurveTable 依技能等級縮放"
+        }
+      }
+    }
+  ],
+  "additionalModifierExamples": [
+    {
+      "name": "AttackPowerBuff",
+      "description": "攻擊力增益範例：增加固定攻擊力",
+      "attribute": "AttackPower",
+      "operation": "Add",
+      "magnitude": {
+        "calculationType": "ScalableFloat",
+        "value": 20.0
+      }
+    },
+    {
+      "name": "ArmorBuff",
+      "description": "護甲增益範例：增加固定護甲值",
+      "attribute": "Armor",
+      "operation": "Add",
+      "magnitude": {
+        "calculationType": "ScalableFloat",
+        "value": 15.0
+      }
+    },
+    {
+      "name": "HealthRegenBuff",
+      "description": "生命回復增益範例：搭配 Period 使用，每秒回復生命值",
+      "attribute": "Health",
+      "operation": "Add",
+      "magnitude": {
+        "calculationType": "ScalableFloat",
+        "value": 5.0
+      },
+      "requiresPeriod": true,
+      "periodValue": 1.0
+    }
+  ],
+  "tags": {
+    "effectAssetTags": ["Buff.SpeedBoost"],
+    "grantedTags": ["State.Buffed.SpeedBoost"],
+    "applicationRequiredTags": [],
+    "applicationImmunityTags": [],
+    "removalTags": ["State.Dead"],
+    "description": "效果啟用時授予 State.Buffed.SpeedBoost Tag，角色死亡時自動移除"
+  },
+  "stacking": {
+    "type": "AggregateBySource",
+    "stackLimit": 3,
+    "durationRefreshPolicy": "RefreshOnSuccessfulApplication",
+    "periodResetPolicy": "NeverReset",
+    "expirationPolicy": "RemoveSingleStackAndRefreshDuration",
+    "description": "同一來源最多堆疊 3 層，每次成功套用刷新持續時間，到期時逐層移除",
+    "alternativeStrategies": {
+      "aggregateByTarget": {
+        "type": "AggregateByTarget",
+        "description": "不論來源，在目標上堆疊。適用於不同來源的增益可疊加的情境"
+      },
+      "noStacking": {
+        "type": "None",
+        "description": "不堆疊，每次套用獨立。適用於不應疊加的增益"
+      }
+    }
+  },
+  "gameplayCue": {
+    "tag": "GameplayCue.Buff.SpeedBoost",
+    "type": "Actor",
+    "description": "增益啟用時附加持續性粒子特效（速度光環），移除時停止",
+    "lifecycle": {
+      "onActive": "生成速度光環粒子系統並附加至角色",
+      "whileActive": "持續顯示光環效果",
+      "onRemove": "停止並銷毀光環粒子系統"
+    }
+  },
+  "conditionalEffects": [
+    {
+      "name": "GE_Buff_SpeedBoost_Enhanced",
+      "condition": "目標擁有 State.Buffed.AttackPower Tag",
+      "description": "當目標同時擁有攻擊力增益時，額外提升 10% 移動速度",
+      "modifier": {
+        "attribute": "MoveSpeed",
+        "operation": "Multiply",
+        "magnitude": {
+          "type": "ScalableFloat",
+          "value": 1.1
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "name": "Sound_SFX",
+  "assetType": "SoundWave",
+  "description": "音效預設，適用於遊戲中的短音效（如腳步聲、武器音效、UI 音效等）",
+  "settings": {
+    "compressionQuality": 80,
+    "sampleRate": 48000,
+    "numChannels": 1,
+    "looping": false,
+    "streaming": false,
+    "seekableStreaming": false,
+    "loadingBehavior": "ForceInline",
+    "soundGroup": "SFX",
+    "maxConcurrentPlayCount": 8,
+    "concurrencyResolutionRule": "StopOldest",
+    "attenuation": {
+      "attenuateWithLPF": true,
+      "innerRadius": 400,
+      "falloffDistance": 3600,
+      "falloffMode": "Logarithmic",
+      "lpfRadiusMin": 3600,
+      "lpfRadiusMax": 6000,
+      "lpfFrequencyAtMin": 20000,
+      "lpfFrequencyAtMax": 8000
+    },
+    "spatialization": {
+      "spatialize": true,
+      "spatializationAlgorithm": "Default"
+    }
+  },
+  "validations": [
+    {
+      "rule": "sampleRate",
+      "condition": "音效取樣率應為 44100 Hz 或 48000 Hz",
+      "severity": "warning"
+    },
+    {
+      "rule": "monoForSpatial",
+      "condition": "需要空間化的音效應使用單聲道（Mono），立體聲無法正確空間化",
+      "severity": "error"
+    },
+    {
+      "rule": "duration",
+      "condition": "SFX 音效長度建議不超過 10 秒，較長的音效應使用串流載入",
+      "severity": "warning"
+    },
+    {
+      "rule": "compressionQuality",
+      "condition": "壓縮品質建議在 40-100 之間，過低會導致明顯的音質損失",
+      "severity": "info"
+    }
+  ],
+  "requirements": [
+    {
+      "check": "fileFormat",
+      "description": "支援的檔案格式為 WAV、OGG、FLAC",
+      "required": true
+    },
+    {
+      "check": "bitDepth",
+      "description": "建議使用 16-bit 或 24-bit 位元深度",
+      "required": false
+    },
+    {
+      "check": "noClipping",
+      "description": "音訊波形不應有削波（Clipping），峰值應低於 0 dBFS",
+      "required": false
+    }
+  ]
+}

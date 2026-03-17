@@ -1,0 +1,64 @@
+{
+  "name": "StaticMesh_Nanite",
+  "assetType": "StaticMesh",
+  "description": "Nanite 靜態網格預設，適用於高面數靜態環境資產，利用 UE5 Nanite 虛擬化幾何系統",
+  "settings": {
+    "naniteEnabled": true,
+    "nanitePositionPrecision": 0,
+    "nanitePercentTriangles": 1.0,
+    "naniteMaxEdgeLengthFactor": 0.0,
+    "generateDistanceFieldAsIfStatic": true,
+    "supportUniformlyDistributedSampling": false,
+    "allowCPUAccess": false,
+    "autoComputeLODScreenSize": true,
+    "lightmapResolution": 64,
+    "lightmapCoordinateIndex": 1,
+    "generateLightmapUVs": true,
+    "hasCollision": true,
+    "complexCollisionAsSimple": false
+  },
+  "validations": [
+    {
+      "rule": "minTriangleCount",
+      "condition": "Nanite 適用於面數超過 10,000 的高面數網格，低面數網格使用 Nanite 無明顯收益",
+      "severity": "warning"
+    },
+    {
+      "rule": "noSkinning",
+      "condition": "Nanite 不支援骨骼網格（Skeletal Mesh），僅適用於靜態網格",
+      "severity": "error"
+    },
+    {
+      "rule": "noWorldPositionOffset",
+      "condition": "使用 World Position Offset 的材質可能與 Nanite 不完全相容",
+      "severity": "warning"
+    },
+    {
+      "rule": "opaqueOrMaskedOnly",
+      "condition": "Nanite 僅支援 Opaque 與 Masked 混合模式的材質",
+      "severity": "error"
+    }
+  ],
+  "requirements": [
+    {
+      "check": "staticMeshOnly",
+      "description": "資產必須為 StaticMesh 類型，Nanite 不支援 SkeletalMesh",
+      "required": true
+    },
+    {
+      "check": "noDeformation",
+      "description": "網格不應包含頂點變形或骨骼綁定",
+      "required": true
+    },
+    {
+      "check": "highPolyRecommended",
+      "description": "建議面數超過 10,000 以充分利用 Nanite 的效能優勢",
+      "required": false
+    },
+    {
+      "check": "unrealEngine5",
+      "description": "Nanite 需要 Unreal Engine 5.0 或更高版本",
+      "required": true
+    }
+  ]
+}

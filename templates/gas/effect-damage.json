@@ -1,0 +1,93 @@
+{
+  "name": "GE_Damage_Base",
+  "description": "基礎傷害 Gameplay Effect 範本，使用 Instant 持續時間從目標 Health 屬性扣除傷害值。支援 ScalableFloat 固定傷害與 SetByCaller 動態傷害兩種模式，並可選配 ExecutionCalculation 進行複雜傷害公式計算。",
+  "effectType": "GameplayEffect",
+  "duration": {
+    "type": "Instant",
+    "description": "即時套用傷害，不持續"
+  },
+  "modifiers": [
+    {
+      "attribute": "Health",
+      "operation": "Add",
+      "description": "從目標 Health 扣除傷害值（負數）",
+      "magnitude": {
+        "calculationType": "ScalableFloat",
+        "scalableFloat": {
+          "value": -25.0,
+          "curveTable": null,
+          "curveRow": null,
+          "description": "固定傷害值，可搭配 CurveTable 依等級縮放"
+        },
+        "alternativeCalculations": {
+          "setByCaller": {
+            "dataTag": "Damage.Amount",
+            "description": "由技能在啟動時動態設定傷害值"
+          },
+          "attributeBased": {
+            "sourceAttribute": "AttackPower",
+            "coefficient": 1.5,
+            "preMultiplyAdditiveValue": 0.0,
+            "postMultiplyAdditiveValue": 0.0,
+            "description": "基於來源 AttackPower 屬性計算傷害：AttackPower × 1.5"
+          },
+          "customCalculation": {
+            "calculationClass": "UDamageExecutionCalculation",
+            "description": "複雜傷害公式：(AttackPower × Coefficient) - (TargetArmor × 0.5)"
+          }
+        }
+      }
+    }
+  ],
+  "executionCalculation": {
+    "class": "UDamageExecutionCalculation",
+    "description": "自訂傷害計算類別，捕獲來源 AttackPower 與目標 Armor 進行公式計算",
+    "capturedAttributes": {
+      "source": ["AttackPower"],
+      "target": ["Armor", "Health"]
+    },
+    "formula": "(SourceAttackPower × Coefficient) - (TargetArmor × ArmorReductionFactor)",
+    "parameters": {
+      "coefficient": 1.5,
+      "armorReductionFactor": 0.5,
+      "minimumDamage": 1.0
+    }
+  },
+  "tags": {
+    "effectAssetTags": ["Damage.Physical"],
+    "grantedTags": [],
+    "applicationRequiredTags": [],
+    "applicationImmunityTags": ["State.Invulnerable"],
+    "removalTags": []
+  },
+  "gameplayCue": {
+    "tag": "GameplayCue.Damage",
+    "type": "Static",
+    "description": "傷害命中時觸發的視覺與音效回饋",
+    "parameters": {
+      "hitLocation": "從 EventData 取得命中位置",
+      "damageAmount": "從 Modifier 取得傷害數值",
+      "damageType": "從 EffectAssetTags 取得傷害類型"
+    }
+  },
+  "stacking": {
+    "type": "None",
+    "description": "Instant 傷害不需要堆疊，每次套用獨立計算"
+  },
+  "conditionalEffects": [
+    {
+      "name": "GE_Damage_Critical",
+      "condition": "來源擁有 State.CriticalHit Tag",
+      "description": "暴擊時套用額外傷害倍率",
+      "modifier": {
+        "attribute": "Health",
+        "operation": "Add",
+        "magnitude": {
+          "type": "AttributeBased",
+          "sourceAttribute": "AttackPower",
+          "coefficient": 3.0
+        }
+      }
+    }
+  ]
+}
