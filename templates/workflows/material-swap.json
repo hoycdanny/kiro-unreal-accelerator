@@ -1,0 +1,46 @@
+{
+  "id": "material-swap",
+  "name": "材質替換工作流",
+  "description": "通用材質替換工作流：搜尋可用材質 → 找到目標 Actor → 批次套用新材質。適用於任何需要替換場景中材質的情境。",
+  "steps": [
+    {
+      "id": "search-materials",
+      "name": "搜尋可用材質",
+      "action": "material_manager.searchMaterials",
+      "params": {
+        "searchPaths": ["/Game"],
+        "recursive": true,
+        "types": ["Material", "MaterialInstance"]
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "find-target-actors",
+      "name": "找到目標 Actor",
+      "action": "material_manager.findActors",
+      "params": {
+        "className": "StaticMeshActor"
+      },
+      "onFailure": "stop"
+    },
+    {
+      "id": "apply-material",
+      "name": "批次套用材質",
+      "action": "material_manager.batchApplyMaterial",
+      "params": {
+        "materialPath": "${selectedMaterial}",
+        "overrideAllSlots": true
+      },
+      "onFailure": "skip"
+    },
+    {
+      "id": "verify-result",
+      "name": "驗證套用結果",
+      "action": "control_editor.screenshot",
+      "params": {
+        "filename": "material_swap_result"
+      },
+      "onFailure": "skip"
+    }
+  ]
+}

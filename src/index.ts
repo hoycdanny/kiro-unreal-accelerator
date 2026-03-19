@@ -7,6 +7,9 @@
 // Analyzers
 export * from './analyzers/index.js';
 
+// Managers
+export * from './managers/index.js';
+
 // Engine
 export * from './engine/index.js';
 

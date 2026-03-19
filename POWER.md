@@ -44,6 +44,7 @@ Maps user intents to the appropriate MCP tools. All tools are prefixed `mcp_unre
 | Profile/optimize performance | `manage_performance` | `system_control`, `inspect` |
 | Create procedural geometry | `manage_geometry` | `manage_asset`, `manage_material_authoring` |
 | Edit skeletal meshes/sockets | `manage_skeleton` | `animation_physics`, `manage_asset` |
+| Find/apply materials | `control_actor` | `manage_asset`, `manage_material_authoring` |
 | Author materials/graphs | `manage_material_authoring` | `manage_asset`, `manage_texture` |
 | Create/process textures | `manage_texture` | `manage_asset` |
 | Create GAS abilities/effects | `manage_gas` | `manage_blueprint`, `manage_character` |
@@ -71,6 +72,8 @@ Steering files provide domain-specific knowledge and best practices. Kiro should
 
 | File | Domain | Purpose |
 |---|---|---|
+| `steering/material-workflow.md` | Material Workflow | Material search, apply, create, replace workflows, MCP API notes |
+| `steering/blueprint-logic.md` | Blueprint Logic | Blueprint creation, node graph generation, template system, node type reference |
 | `steering/performance.md` | Performance | Draw Call optimization, memory management, GPU optimization, common anti-patterns |
 | `steering/architecture.md` | Architecture | Blueprint vs C++ responsibility split, modular design, naming conventions |
 | `steering/asset-pipeline.md` | Asset Pipeline | Asset import workflows, texture settings, mesh settings, audio settings |
@@ -97,7 +100,7 @@ Templates are JSON definitions used to generate Unreal Engine assets, levels, an
 | `templates/build-configs/` | 3 | Build configurations — `development`, `shipping`, `test` |
 | `templates/platform-profiles/` | 5 | Platform profiles — `windows`, `ps5`, `xbox-series-x`, `ios`, `android` |
 | `templates/architecture-rules/` | 3 | Architecture rules — `naming-conventions`, `folder-structure`, `dependency-rules` |
-| `templates/workflows/` | 3 | Workflow templates — `asset-import-pipeline`, `build-and-test`, `performance-audit` |
+| `templates/workflows/` | 4 | Workflow templates — `asset-import-pipeline`, `build-and-test`, `performance-audit`, `material-swap` |
 
 ---
 
@@ -121,8 +124,20 @@ When a user request arrives, route it through these rules to select the right co
 - **"create a game mode"** → `templates/blueprints/gamemode-base.json` → `manage_game_framework` + `manage_blueprint`
 - **"create a widget / HUD"** → `steering/ui-patterns.md` → `templates/blueprints/widget-hud.json` → `manage_widget_authoring`
 
+### Blueprint Logic Generation
+- **"build blueprint logic / add nodes"** → `steering/blueprint-logic.md` → BlueprintManager.buildGraphLogic → `manage_blueprint`
+- **"create blueprint from template"** → `steering/blueprint-logic.md` → `templates/blueprints/*` → BlueprintManager.createFromTemplate → `manage_blueprint`
+- **"add variable/function to blueprint"** → `steering/blueprint-logic.md` → BlueprintManager.addVariable / addFunction → `manage_blueprint`
+- **"connect blueprint nodes"** → `steering/blueprint-logic.md` → BlueprintManager.connectPins → `manage_blueprint`
+- **"add BeginPlay / Tick event"** → `steering/blueprint-logic.md` → BlueprintManager.addBeginPlayEvent / addTickEvent → `manage_blueprint`
+- **"compile blueprint"** → BlueprintManager.compileBlueprint → `manage_blueprint`
+
 ### Material Workflows
-- **"create a material"** → `steering/asset-pipeline.md` → `templates/materials/*` → `manage_material_authoring`
+- **"find/search materials"** → `steering/material-workflow.md` → MaterialManager.searchMaterials → `manage_asset`
+- **"apply/change material on actor"** → `steering/material-workflow.md` → MaterialManager.applyMaterialToActor → `control_actor`
+- **"replace/swap material"** → `steering/material-workflow.md` → `templates/workflows/material-swap.json` → MaterialManager.replaceMaterial
+- **"create a material"** → `steering/material-workflow.md` → `templates/materials/*` → MaterialManager.createMaterial → `manage_material_authoring`
+- **"create material instance"** → `steering/material-workflow.md` → MaterialManager.createMaterialInstance → `manage_material_authoring`
 - **"create landscape material"** → `templates/materials/landscape-blend.json` → `manage_material_authoring` + `build_environment`
 - **"create VFX material"** → `templates/materials/vfx-translucent.json` → `manage_material_authoring`
 
@@ -149,8 +164,35 @@ When a user request arrives, route it through these rules to select the right co
 
 ### Workflows
 - **"run asset import pipeline"** → `templates/workflows/asset-import-pipeline.json` → WorkflowEngine
+- **"run material swap"** → `templates/workflows/material-swap.json` → WorkflowEngine + MaterialManager
 - **"run performance audit"** → `templates/workflows/performance-audit.json` → WorkflowEngine + PerformanceAnalyzer
 - **"run build and test"** → `templates/workflows/build-and-test.json` → WorkflowEngine
+
+---
+
+## Known Issues & Dangerous Operations
+
+### NEVER use `ce` console command via MCP
+The `ce` (CallEvent) console command causes an **immediate Unreal Editor crash** when executed through the MCP Automation Bridge. The crash occurs in `UEngine::HandleCeCommand` due to a null pointer access in the level array. **Never use `ce` as a workaround for any operation.** Always use the dedicated MCP tool actions instead.
+
+**Crash signature:**
+```
+UEngine::HandleCeCommand → TArray<TObjectPtr<ULevel>> → Signal 0x143f8184 (SEGFAULT)
+```
+
+### `set_component_property` with `OverrideMaterials` is unreliable
+When using `control_actor` → `set_component_property` to set `OverrideMaterials` on a `StaticMeshComponent`, the call may report `success: true` but the property remains `[None]` when verified. This is a known MCP bridge limitation for array-type material properties.
+
+**Workaround (PROVEN):** Use the **Blueprint SCS approach**:
+1. Create a Blueprint (`manage_blueprint` → `create`)
+2. Add a `StaticMeshComponent` via `add_scs_component` with `meshPath` and `materialPath` parameters — both `mesh_applied: true` and `material_applied: true` must be confirmed
+3. Spawn the Blueprint (`control_actor` → `spawn_blueprint`) at the desired location/scale
+4. Delete the original actor if replacing
+
+This is the only reliable method to apply materials to actors via MCP. Do NOT use `set_component_property` with `OverrideMaterials` — it always fails silently.
+
+### Excessive Undo can corrupt scene state
+Calling `undo` in bulk (e.g., 40+ times) to revert batch operations can overshoot and undo unrelated prior changes, leaving the scene in a broken state (missing materials, unlit surfaces). **Prefer targeted restoration** (re-applying original materials explicitly) over mass undo when reverting batch material changes.
 
 ---
 
@@ -160,6 +202,8 @@ TypeScript modules providing deep analysis capabilities. Located in `src/`.
 
 | Module | Path | Capabilities |
 |---|---|---|
+| **BlueprintManager** | `src/managers/BlueprintManager.ts` | Blueprint creation from templates, node graph logic generation (add nodes, connect pins, build complete event graphs), variable/function/component management, compile & validate |
+| **MaterialManager** | `src/managers/MaterialManager.ts` | Material search/discovery, apply to actors (single/batch), create materials & instances, material replacement workflows |
 | **AssetAnalyzer** | `src/analyzers/AssetAnalyzer.ts` | Asset type detection, Nanite compatibility validation, preset application, batch configuration |
 | **PerformanceAnalyzer** | `src/analyzers/PerformanceAnalyzer.ts` | Scene profiling, draw call / memory / GPU analysis, Nanite & Lumen analysis, anti-pattern detection |
 | **CodeQualityAnalyzer** | `src/analyzers/CodeQualityAnalyzer.ts` | Naming convention checks, circular dependency detection, Blueprint/C++ balance analysis, refactoring suggestions |
