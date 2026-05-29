@@ -1,0 +1,12 @@
+{
+  "name": "Pre-Unreal Tool Guidance",
+  "version": "1.0.0",
+  "description": "Automatically reminds the AI to activate the Unreal Accelerator Power and load the appropriate Steering File before processing each request.",
+  "when": {
+    "type": "promptSubmit"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Before responding, check if this request is related to Unreal Engine development. If so: 1) Activate the Kiro Unreal Accelerator Power if not already active. 2) Identify the relevant steering file(s) from steering/ directory based on the topic (material-workflow, blueprint-logic, performance, architecture, asset-pipeline, blueprint-patterns, ue5-features, platform-compat, gas-patterns, ui-patterns). 3) Load the steering file content to inform your response. 4) Use the appropriate MCP tools as defined in POWER.md intent routing rules."
+  }
+}

@@ -7,10 +7,14 @@
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
+    "test:unit": "vitest run --testPathPattern='__tests__/(analyzers|managers|generators|engine|utils)/.*\\.test\\.ts$'",
+    "test:property": "vitest run --testPathPattern='\\.property\\.test\\.ts$'",
+    "test:integration": "vitest run --testPathPattern='\\.integration\\.test\\.ts$'",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
+    "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist",
     "prepublishOnly": "npm run build"
   },

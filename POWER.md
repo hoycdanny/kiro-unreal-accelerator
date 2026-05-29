@@ -1,8 +1,8 @@
 # Kiro Unreal Accelerator
 
-An intelligent Unreal Engine development accelerator Power that integrates 35 MCP tools to provide natural-language-driven control over Unreal Editor. Automates asset management, level building, performance analysis, Blueprint generation, material workflows, and more.
+An intelligent Unreal Engine development accelerator Power that integrates 50+ MCP tools (via [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp)) to provide natural-language-driven control over Unreal Editor. Automates asset management, level building, performance analysis, Blueprint generation, material workflows, VFX, animation, landscape, AI/BT, cinematics, PCG, and more. Supports Unreal Engine 5.5 / 5.6 / 5.7.
 
-**Keywords:** unreal, ue5, blueprint, nanite, lumen, material, level, performance, asset, game
+**Keywords:** unreal, ue5, ue5.7, blueprint, nanite, lumen, material, level, performance, asset, game, flopperam
 
 ---
 

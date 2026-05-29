@@ -3,3 +3,18 @@ dist/
 *.js.map
 .DS_Store
 coverage/
+
+# IDE
+.vscode/
+.idea/
+
+# Environment
+.env
+.env.local
+
+# OS
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
