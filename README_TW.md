@@ -216,12 +216,11 @@ cp -r ~/Desktop/unreal-engine-mcp/UnrealMCP Plugins/
 
 **步驟 4 — 安裝 Python 環境**
 
-1. 安裝 [Python 3.12+](https://www.python.org/downloads/)
+1. 安裝 [Python 3.12+](https://www.python.org/downloads/)（安裝時勾選 "Add Python to PATH"）
 2. 安裝 [uv](https://docs.astral.sh/uv/getting-started/installation/)（Python 套件執行器）：
 
-```powershell
-# Windows PowerShell
-irm https://astral.sh/uv/install.ps1 | iex
+```cmd
+pip install uv
 ```
 
 **步驟 5 — 驗證 Python Server 可以啟動**

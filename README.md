@@ -93,12 +93,8 @@ cp -r ~/Desktop/unreal-engine-mcp/UnrealMCP Plugins/
 4. Install Python dependencies:
    - Install [Python 3.12+](https://www.python.org/downloads/)
    - Install [uv](https://docs.astral.sh/uv/getting-started/installation/) (Python package runner):
-     ```bash
-     # Windows (PowerShell)
-     irm https://astral.sh/uv/install.ps1 | iex
-
-     # macOS / Linux
-     curl -LsSf https://astral.sh/uv/install.sh | sh
+     ```cmd
+     pip install uv
      ```
 
 5. Verify the Python server can start:

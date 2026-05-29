@@ -97,9 +97,8 @@ xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "Plugins\UnrealM
 
 **2d — 安装 Python 环境**
 
-```powershell
-# 安装 uv（PowerShell）
-irm https://astral.sh/uv/install.ps1 | iex
+```cmd
+pip install uv
 ```
 
 **2e — 验证 Python Server**

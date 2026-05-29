@@ -97,9 +97,8 @@ UEプロジェクト/
 
 **2d — Python 環境をインストール**
 
-```powershell
-# uv をインストール（PowerShell）
-irm https://astral.sh/uv/install.ps1 | iex
+```cmd
+pip install uv
 ```
 
 **2e — Python Server を検証**
