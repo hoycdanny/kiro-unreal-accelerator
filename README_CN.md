@@ -54,34 +54,29 @@ Unreal Accelerator（智能层）
 
 打开 Kiro → 左侧面板点击 Powers 图标 → 点击 "+" → 选择 "Add Custom Power" → 选择本项目根目录
 
-### 步骤 2 — 安装 MCP Server（FlopAI 插件）
+### 步骤 2 — 安装 MCP Server
 
-本 Power 使用 [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp) — 最先进的 UE MCP Server，50+ 工具覆盖 9 大领域。支持 UE 5.5 / 5.6 / 5.7。
+本 Power 使用 [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp) — 最先进的 UE MCP Server，支持 UE 5.5 / 5.6 / 5.7。
+
+**方式 1：开源本地 MCP（免费，推荐）**
+
+1. Clone repo：`git clone https://github.com/flopperam/unreal-engine-mcp.git`
+2. 将 `UnrealMCP/` 文件夹复制到你的 UE 项目 `Plugins/` 目录
+3. 重新生成项目文件、编译 Plugin，在 Editor 中启用（Edit → Plugins → "UnrealMCP"）
+4. 安装 Python 3.12+ 和 [uv](https://docs.astral.sh/uv/getting-started/installation/)
+
+**方式 2：Hosted Flop MCP（付费，50+ 完整工具）**
+
+如需完整 50+ 工具且不想本地架设：
 
 1. 前往 [flopperam.com/account](https://flopperam.com/account) 获取 API Key
 2. 安装 FlopAI Unreal 插件 — 参见 [flopperam.com/docs](https://flopperam.com/docs)（Installation 标签页）
-3. 确认插件在 Unreal Editor 中正常运行
 
 ### 步骤 3 — 配置 MCP 连接
 
 编辑 `mcp.json` 或 `.kiro/settings/mcp.json`：
 
-**方式 A：Hosted Flop MCP（推荐）**
-
-```json
-{
-  "mcpServers": {
-    "unreal-engine": {
-      "url": "https://agent.flopperam.com/mcp",
-      "headers": {
-        "Authorization": "Bearer YOUR_API_KEY"
-      }
-    }
-  }
-}
-```
-
-**方式 B：开源本地 MCP（备用）**
+**方式 1：本地 MCP（免费）**
 
 ```json
 {
@@ -99,7 +94,20 @@ Unreal Accelerator（智能层）
 }
 ```
 
-> **注意**：本地版本仅提供基础工具集。完整 50+ 工具体验请使用 Hosted 版本。
+**方式 2：Hosted Flop MCP（付费）**
+
+```json
+{
+  "mcpServers": {
+    "unreal-engine": {
+      "url": "https://agent.flopperam.com/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
 
 ### 步骤 4 — 安装自动引导 Hook（推荐）
 

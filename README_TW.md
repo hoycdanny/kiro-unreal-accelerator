@@ -167,35 +167,15 @@ npx vitest run
 
 本 Power 使用 [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp) 作為 MCP Server，提供 50+ 工具涵蓋 Blueprint、材質、VFX、動畫、地形、AI、Cinematics、PCG 等 9 大領域。
 
-#### 方式 A：Hosted Flop MCP（推薦）
+#### 方式 1：Open-Source Local MCP（免費，推薦）
 
-無需本地安裝，一個 URL + API Key 即可使用。支援 UE 5.5 / 5.6 / 5.7。
+無需付費，本地運行開源版本：
 
-1. 前往 [flopperam.com/account](https://flopperam.com/account) 取得 API Key
-2. 安裝 FlopAI Unreal Plugin — 參見 [flopperam.com/docs](https://flopperam.com/docs)（Installation 頁籤）
-3. 設定 `mcp.json` 或 `.kiro/settings/mcp.json`：
-
-```json
-{
-  "mcpServers": {
-    "unreal-engine": {
-      "url": "https://agent.flopperam.com/mcp",
-      "headers": {
-        "Authorization": "Bearer YOUR_API_KEY"
-      }
-    }
-  }
-}
-```
-
-#### 方式 B：Open-Source Local MCP（備用）
-
-如果無法使用 Hosted 版本，可以本地運行開源版本：
-
-1. Clone [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp)
+1. Clone repo：`git clone https://github.com/flopperam/unreal-engine-mcp.git`
 2. 將 `UnrealMCP/` 資料夾複製到你的 UE 專案 `Plugins/` 目錄
-3. 安裝 Python 3.12+，執行 `Python/` 目錄下的 MCP Server
-4. 設定 `mcp.json`：
+3. 重新生成專案檔案、編譯 Plugin，在 Editor 中啟用（Edit → Plugins → "UnrealMCP"）
+4. 安裝 Python 3.12+ 和 [uv](https://docs.astral.sh/uv/getting-started/installation/)
+5. 設定 `mcp.json`：
 
 ```json
 {
@@ -213,7 +193,26 @@ npx vitest run
 }
 ```
 
-> **注意**：Local 版本僅提供基礎工具集（場景操作、Actor 管理、Blueprint 基礎操作）。完整 50+ 工具體驗請使用 Hosted 版本。
+#### 方式 2：Hosted Flop MCP（付費，50+ 完整工具）
+
+如果需要完整 50+ 工具且不想本地架設：
+
+1. 前往 [flopperam.com/account](https://flopperam.com/account) 取得 API Key
+2. 安裝 FlopAI Unreal Plugin — 參見 [flopperam.com/docs](https://flopperam.com/docs)（Installation 頁籤）
+3. 設定 `mcp.json`：
+
+```json
+{
+  "mcpServers": {
+    "unreal-engine": {
+      "url": "https://agent.flopperam.com/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
 
 ### 安裝自動導引 Hook（建議）
 

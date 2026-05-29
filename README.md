@@ -43,10 +43,11 @@ Unreal Accelerator (Intelligence Layer)
 
 ## Prerequisites
 
-* [Unreal Engine 5.5+](https://www.unrealengine.com/) (5.5 / 5.6 / 5.7 supported) with FlopAI plugin installed
+* [Unreal Engine 5.5+](https://www.unrealengine.com/) (5.5 / 5.6 / 5.7 supported)
 * [Kiro IDE](https://kiro.dev/docs/getting-started/installation) installed
-* [Flopperam API Key](https://flopperam.com/account) (for Hosted MCP) or Python 3.12+ (for Local MCP)
+* Python 3.12+ and [uv](https://docs.astral.sh/uv/getting-started/installation/) (for Local MCP)
 * Node.js 18+ (for development/testing of this Power only)
+* (Optional) [Flopperam API Key](https://flopperam.com/account) — only if using the paid Hosted MCP
 
 ## Installation
 
@@ -58,30 +59,25 @@ Open Kiro → Left panel click Powers icon → Click "+" → Select "Add Custom 
 
 This Power uses [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp) — the most advanced MCP server for Unreal Engine with 50+ tools across 9 domains. Supports UE 5.5 / 5.6 / 5.7.
 
+**Option 1: Open-Source Local MCP (Free, Recommended)**
+
+1. Clone the repo: `git clone https://github.com/flopperam/unreal-engine-mcp.git`
+2. Copy `UnrealMCP/` folder to your UE project's `Plugins/` directory
+3. Regenerate project files, build the plugin, and enable it in Editor (Edit → Plugins → "UnrealMCP")
+4. Install Python 3.12+ and [uv](https://docs.astral.sh/uv/getting-started/installation/)
+
+**Option 2: Hosted Flop MCP (Paid, 50+ tools)**
+
+If you want the full 50+ tool experience with zero local setup:
+
 1. Get an API key at [flopperam.com/account](https://flopperam.com/account)
 2. Install the FlopAI Unreal plugin — see [flopperam.com/docs](https://flopperam.com/docs) (Installation tab)
-3. Verify the plugin is running in Unreal Editor
 
 ### Step 3 — Configure MCP Connection
 
 Edit `mcp.json` or `.kiro/settings/mcp.json`:
 
-**Option A: Hosted Flop MCP (Recommended)**
-
-```json
-{
-  "mcpServers": {
-    "unreal-engine": {
-      "url": "https://agent.flopperam.com/mcp",
-      "headers": {
-        "Authorization": "Bearer YOUR_API_KEY"
-      }
-    }
-  }
-}
-```
-
-**Option B: Open-Source Local MCP (Fallback)**
+**Option 1: Local MCP (Free)**
 
 ```json
 {
@@ -99,7 +95,20 @@ Edit `mcp.json` or `.kiro/settings/mcp.json`:
 }
 ```
 
-> **Note**: The local version provides a basic toolset only. For the full 50+ tool experience, use the Hosted version.
+**Option 2: Hosted Flop MCP (Paid)**
+
+```json
+{
+  "mcpServers": {
+    "unreal-engine": {
+      "url": "https://agent.flopperam.com/mcp",
+      "headers": {
+        "Authorization": "Bearer YOUR_API_KEY"
+      }
+    }
+  }
+}
+```
 
 ### Step 4 — Install Auto-Guidance Hook (Recommended)
 
