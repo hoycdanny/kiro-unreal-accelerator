@@ -131,11 +131,14 @@ Windows：
       "command": "uv",
       "args": [
         "--directory",
-        "C:/Users/<ユーザー名>/Desktop/unreal-engine-mcp/Python",
+        "C:\\Users\\<ユーザー名>\\Desktop\\unreal-engine-mcp\\Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }
 ```
@@ -153,11 +156,14 @@ macOS / Linux：
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }
 ```
 
-> パスを実際にクローンした場所に置き換えてください。JSON ではスラッシュ `/` またはダブルバックスラッシュ `\\` を使用してください。シングルバックスラッシュ `\` はパースエラーになります。
+> パスを実際にクローンした場所に置き換えてください。Windows では JSON 内でダブルバックスラッシュ `\\` を使用してください。
 
 **方法 2：Hosted Flop MCP（有料）**
 

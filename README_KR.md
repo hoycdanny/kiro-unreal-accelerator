@@ -131,11 +131,14 @@ Windows:
       "command": "uv",
       "args": [
         "--directory",
-        "C:/Users/<사용자이름>/Desktop/unreal-engine-mcp/Python",
+        "C:\\Users\\<사용자이름>\\Desktop\\unreal-engine-mcp\\Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }
 ```
@@ -153,11 +156,14 @@ macOS / Linux:
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }
 ```
 
-> 경로를 실제 클론한 위치로 변경하세요. JSON에서는 슬래시 `/` 또는 이중 백슬래시 `\\`를 사용하세요. 단일 백슬래시 `\`는 파싱 오류를 발생시킵니다.
+> 경로를 실제 클론한 위치로 변경하세요. Windows에서는 JSON 내에서 이중 백슬래시 `\\`를 사용하세요.
 
 **방법 2: Hosted Flop MCP (유료)**
 

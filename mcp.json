@@ -4,10 +4,13 @@
       "command": "uv",
       "args": [
         "--directory",
-        "<path/to/unreal-engine-mcp/Python>",
+        "C:\\Users\\Danny\\Desktop\\unreal-engine-mcp\\Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }

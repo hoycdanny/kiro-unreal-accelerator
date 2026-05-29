@@ -131,11 +131,14 @@ Windows：
       "command": "uv",
       "args": [
         "--directory",
-        "C:/Users/<你的用户名>/Desktop/unreal-engine-mcp/Python",
+        "C:\\Users\\<你的用户名>\\Desktop\\unreal-engine-mcp\\Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }
 ```
@@ -153,11 +156,14 @@ macOS / Linux：
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }
 ```
 
-> 将路径替换为你实际 clone 的位置。JSON 中路径必须使用正斜线 `/` 或双反斜线 `\\`，单反斜线 `\` 会导致解析错误。
+> 将路径替换为你实际 clone 的位置。Windows 在 JSON 中必须使用双反斜线 `\\`。
 
 **方式 2：Hosted Flop MCP（付费）**
 

@@ -127,11 +127,14 @@ Windows:
       "command": "uv",
       "args": [
         "--directory",
-        "C:/Users/<YOU>/Desktop/unreal-engine-mcp/Python",
+        "C:\\Users\\<YOU>\\Desktop\\unreal-engine-mcp\\Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }
 ```
@@ -149,11 +152,14 @@ macOS / Linux:
         "unreal_mcp_server_advanced.py"
       ]
     }
+  },
+  "powers": {
+    "mcpServers": {}
   }
 }
 ```
 
-> Replace the path with the actual location where you cloned the repo. Use forward slashes `/` or double backslashes `\\` in JSON — single backslashes `\` will cause parse errors.
+> Replace the path with the actual location where you cloned the repo. On Windows use double backslashes `\\` in JSON.
 
 **Option 2: Hosted Flop MCP (Paid)**
 
