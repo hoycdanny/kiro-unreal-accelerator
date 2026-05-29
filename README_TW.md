@@ -234,6 +234,7 @@ uv run unreal_mcp_server_advanced.py
 
 **步驟 6 — 設定 mcp.json**
 
+Windows：
 ```json
 {
   "mcpServers": {
@@ -250,7 +251,24 @@ uv run unreal_mcp_server_advanced.py
 }
 ```
 
-> 將 `C:/Users/<你的使用者名稱>/Desktop/unreal-engine-mcp/Python` 替換為你實際 clone 的路徑。JSON 中路徑必須使用正斜線 `/` 或雙反斜線 `\\`，單反斜線 `\` 會導致解析錯誤。
+macOS / Linux：
+```json
+{
+  "mcpServers": {
+    "unreal-engine": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/<你的使用者名稱>/Desktop/unreal-engine-mcp/Python",
+        "run",
+        "unreal_mcp_server_advanced.py"
+      ]
+    }
+  }
+}
+```
+
+> 將路徑替換為你實際 clone 的位置。JSON 中路徑必須使用正斜線 `/` 或雙反斜線 `\\`，單反斜線 `\` 會導致解析錯誤。
 
 #### 方式 2：Hosted Flop MCP（付費，50+ 完整工具）
 

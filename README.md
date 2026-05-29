@@ -119,6 +119,7 @@ Edit `mcp.json` or `.kiro/settings/mcp.json`:
 
 **Option 1: Local MCP (Free)**
 
+Windows:
 ```json
 {
   "mcpServers": {
@@ -135,7 +136,24 @@ Edit `mcp.json` or `.kiro/settings/mcp.json`:
 }
 ```
 
-> Replace `C:/Users/<YOU>/Desktop/unreal-engine-mcp/Python` with the actual path where you cloned the repo. Use forward slashes `/` or double backslashes `\\` in JSON — single backslashes `\` will cause parse errors.
+macOS / Linux:
+```json
+{
+  "mcpServers": {
+    "unreal-engine": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/<YOU>/Desktop/unreal-engine-mcp/Python",
+        "run",
+        "unreal_mcp_server_advanced.py"
+      ]
+    }
+  }
+}
+```
+
+> Replace the path with the actual location where you cloned the repo. Use forward slashes `/` or double backslashes `\\` in JSON — single backslashes `\` will cause parse errors.
 
 **Option 2: Hosted Flop MCP (Paid)**
 

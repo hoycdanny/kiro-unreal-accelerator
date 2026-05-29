@@ -123,6 +123,7 @@ uv run unreal_mcp_server_advanced.py
 
 **方式 1：本地 MCP（免费）**
 
+Windows：
 ```json
 {
   "mcpServers": {
@@ -131,6 +132,23 @@ uv run unreal_mcp_server_advanced.py
       "args": [
         "--directory",
         "C:/Users/<你的用户名>/Desktop/unreal-engine-mcp/Python",
+        "run",
+        "unreal_mcp_server_advanced.py"
+      ]
+    }
+  }
+}
+```
+
+macOS / Linux：
+```json
+{
+  "mcpServers": {
+    "unreal-engine": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/Users/<你的用户名>/Desktop/unreal-engine-mcp/Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
