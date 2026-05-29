@@ -297,14 +297,16 @@ macOS / Linux：
 }
 ```
 
-### 安裝自動導引 Hook（建議）
+### 安裝自動導引 Hook（必要）
 
-本 Power 提供 `promptSubmit` hook，會在每次請求前自動提醒 AI 啟動 Power 並載入對應的 Steering File：
+此 Hook 確保 AI 在每次 prompt 時自動啟動 Power 並正確使用 MCP 工具：
 
 ```bash
 mkdir -p .kiro/hooks
 cp hooks/pre-unreal-tool.kiro.hook .kiro/hooks/
 ```
+
+> 不安裝此 Hook 的話，你每次都需要手動提醒 AI 使用 MCP 工具。
 
 ### 驗證連線
 

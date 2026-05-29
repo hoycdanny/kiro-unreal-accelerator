@@ -180,12 +180,16 @@ macOS / Linux：
 }
 ```
 
-### ステップ 4 — 自動ガイダンス Hook をインストール（推奨）
+### ステップ 4 — 自動ガイダンス Hook をインストール（必須）
+
+この Hook により、AI が毎回のプロンプトで自動的に Power を起動し、MCP ツールを正しく使用します：
 
 ```bash
 mkdir -p .kiro/hooks
 cp hooks/pre-unreal-tool.kiro.hook .kiro/hooks/
 ```
+
+> この Hook をインストールしないと、毎回手動で AI に MCP ツールの使用を指示する必要があります。
 
 ### 接続確認
 

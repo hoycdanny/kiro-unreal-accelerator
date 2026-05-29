@@ -180,12 +180,16 @@ macOS / Linux：
 }
 ```
 
-### 步骤 4 — 安装自动引导 Hook（推荐）
+### 步骤 4 — 安装自动引导 Hook（必要）
+
+此 Hook 确保 AI 在每次 prompt 时自动启动 Power 并正确使用 MCP 工具：
 
 ```bash
 mkdir -p .kiro/hooks
 cp hooks/pre-unreal-tool.kiro.hook .kiro/hooks/
 ```
+
+> 不安装此 Hook 的话，你每次都需要手动提醒 AI 使用 MCP 工具。
 
 ### 验证连接
 

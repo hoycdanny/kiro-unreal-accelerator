@@ -180,12 +180,16 @@ macOS / Linux:
 }
 ```
 
-### 단계 4 — 자동 가이던스 Hook 설치 (권장)
+### 단계 4 — 자동 가이던스 Hook 설치 (필수)
+
+이 Hook은 AI가 매 프롬프트마다 자동으로 Power를 활성화하고 MCP 도구를 올바르게 사용하도록 합니다:
 
 ```bash
 mkdir -p .kiro/hooks
 cp hooks/pre-unreal-tool.kiro.hook .kiro/hooks/
 ```
+
+> 이 Hook을 설치하지 않으면 매번 수동으로 AI에게 MCP 도구 사용을 지시해야 합니다.
 
 ### 연결 확인
 
