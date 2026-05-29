@@ -171,11 +171,58 @@ npx vitest run
 
 無需付費，本地運行開源版本：
 
-1. Clone repo：`git clone https://github.com/flopperam/unreal-engine-mcp.git`
-2. 將 `UnrealMCP/` 資料夾複製到你的 UE 專案 `Plugins/` 目錄
-3. 重新生成專案檔案、編譯 Plugin，在 Editor 中啟用（Edit → Plugins → "UnrealMCP"）
-4. 安裝 Python 3.12+ 和 [uv](https://docs.astral.sh/uv/getting-started/installation/)
-5. 設定 `mcp.json`：
+**步驟 1 — Clone repo 到固定位置（不要放在 UE 專案裡面）**
+
+```cmd
+cd %USERPROFILE%\Desktop
+git clone https://github.com/flopperam/unreal-engine-mcp.git
+```
+
+**步驟 2 — 複製 UnrealMCP Plugin 到你的 UE 專案**
+
+```cmd
+xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "C:\Users\<你的使用者名稱>\Documents\Unreal Projects\<你的專案名稱>\Plugins\UnrealMCP"
+```
+
+最終結構應該是：
+```
+你的UE專案/
+├── Plugins/
+│   └── UnrealMCP/          ← 只要這個資料夾
+│       ├── Source/
+│       ├── UnrealMCP.uplugin
+│       └── ...
+├── Content/
+├── 你的專案.uproject
+└── ...
+```
+
+**步驟 3 — 編譯並啟用 Plugin**
+
+1. 右鍵你的 `.uproject` 檔案 → "Generate Visual Studio project files"
+2. 開啟 `.sln`，選擇 **Development Editor** 作為 Build Target，按 Build
+3. 開啟 Unreal Editor → Edit → Plugins → 搜尋 "UnrealMCP" → 啟用 → 重啟 Editor
+
+**步驟 4 — 安裝 Python 環境**
+
+1. 安裝 [Python 3.12+](https://www.python.org/downloads/)
+2. 安裝 [uv](https://docs.astral.sh/uv/getting-started/installation/)（Python 套件執行器）：
+
+```powershell
+# Windows PowerShell
+irm https://astral.sh/uv/install.ps1 | iex
+```
+
+**步驟 5 — 驗證 Python Server 可以啟動**
+
+```cmd
+cd %USERPROFILE%\Desktop\unreal-engine-mcp\Python
+uv run unreal_mcp_server_advanced.py
+```
+
+如果啟動無錯誤，按 Ctrl+C 停止。Kiro 會自動管理 Server 的啟停。
+
+**步驟 6 — 設定 mcp.json**
 
 ```json
 {
@@ -184,7 +231,7 @@ npx vitest run
       "command": "uv",
       "args": [
         "--directory",
-        "<path/to/unreal-engine-mcp/Python>",
+        "C:/Users/<你的使用者名稱>/Desktop/unreal-engine-mcp/Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
@@ -192,6 +239,8 @@ npx vitest run
   }
 }
 ```
+
+> 將 `C:/Users/<你的使用者名稱>/Desktop/unreal-engine-mcp/Python` 替換為你實際 clone 的路徑。
 
 #### 方式 2：Hosted Flop MCP（付費，50+ 完整工具）
 

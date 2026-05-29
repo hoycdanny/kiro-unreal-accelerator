@@ -61,10 +61,47 @@ This Power uses [flopperam/unreal-engine-mcp](https://github.com/flopperam/unrea
 
 **Option 1: Open-Source Local MCP (Free, Recommended)**
 
-1. Clone the repo: `git clone https://github.com/flopperam/unreal-engine-mcp.git`
-2. Copy `UnrealMCP/` folder to your UE project's `Plugins/` directory
-3. Regenerate project files, build the plugin, and enable it in Editor (Edit → Plugins → "UnrealMCP")
-4. Install Python 3.12+ and [uv](https://docs.astral.sh/uv/getting-started/installation/)
+1. Clone the repo to a permanent location (NOT inside your UE project):
+
+```bash
+cd ~/Desktop
+git clone https://github.com/flopperam/unreal-engine-mcp.git
+```
+
+2. Copy the `UnrealMCP` plugin into your Unreal project:
+
+```bash
+# Windows (CMD)
+xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "C:\Users\<YOU>\Documents\Unreal Projects\<YOUR_PROJECT>\Plugins\UnrealMCP"
+
+# macOS / Linux
+cp -r ~/Desktop/unreal-engine-mcp/UnrealMCP ~/Documents/Unreal\ Projects/<YOUR_PROJECT>/Plugins/
+```
+
+3. Build and enable the plugin:
+   - Right-click your `.uproject` file → "Generate Visual Studio project files"
+   - Open the `.sln`, set target to **Development Editor**, and Build
+   - Open Unreal Editor → Edit → Plugins → search "UnrealMCP" → Enable → Restart Editor
+
+4. Install Python dependencies:
+   - Install [Python 3.12+](https://www.python.org/downloads/)
+   - Install [uv](https://docs.astral.sh/uv/getting-started/installation/) (Python package runner):
+     ```bash
+     # Windows (PowerShell)
+     irm https://astral.sh/uv/install.ps1 | iex
+
+     # macOS / Linux
+     curl -LsSf https://astral.sh/uv/install.sh | sh
+     ```
+
+5. Verify the Python server can start:
+
+```bash
+cd ~/Desktop/unreal-engine-mcp/Python
+uv run unreal_mcp_server_advanced.py
+```
+
+If it starts without errors, press Ctrl+C to stop it. Kiro will manage the server automatically.
 
 **Option 2: Hosted Flop MCP (Paid, 50+ tools)**
 
@@ -86,7 +123,7 @@ Edit `mcp.json` or `.kiro/settings/mcp.json`:
       "command": "uv",
       "args": [
         "--directory",
-        "<path/to/unreal-engine-mcp/Python>",
+        "C:/Users/<YOU>/Desktop/unreal-engine-mcp/Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
@@ -94,6 +131,8 @@ Edit `mcp.json` or `.kiro/settings/mcp.json`:
   }
 }
 ```
+
+> Replace `C:/Users/<YOU>/Desktop/unreal-engine-mcp/Python` with the actual path where you cloned the repo.
 
 **Option 2: Hosted Flop MCP (Paid)**
 
