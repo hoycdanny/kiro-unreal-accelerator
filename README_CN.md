@@ -49,7 +49,7 @@ Unreal Accelerator（智能层）
 * Node.js 18+（仅本 Power 开发/测试需要）
 * （可选）[Flopperam API Key](https://flopperam.com/account) — 仅付费 Hosted MCP 需要
 
-> **完整安装步骤请参考 [SETUP.md](SETUP.md)**
+> **完整安装步骤请参考下方安装章节**
 
 ## 安装
 

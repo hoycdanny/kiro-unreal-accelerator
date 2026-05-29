@@ -49,7 +49,7 @@ Unreal Accelerator (Intelligence Layer)
 * Node.js 18+ (for development/testing of this Power only)
 * (Optional) [Flopperam API Key](https://flopperam.com/account) — only if using the paid Hosted MCP
 
-> **For complete step-by-step installation instructions, see [SETUP.md](SETUP.md)**
+> **For complete step-by-step installation instructions, see the Installation section below.**
 
 ## Installation
 
@@ -73,12 +73,17 @@ git clone https://github.com/flopperam/unreal-engine-mcp.git
 2. Copy the `UnrealMCP` plugin into your Unreal project's `Plugins/` folder:
 
 ```bash
-# Windows (CMD) — run from your UE project root
+# Windows (CMD) — navigate to your UE project root first (where .uproject is)
+cd "C:\Users\<YOU>\Documents\Unreal Projects\<YOUR_PROJECT>"
+
+# Then copy the plugin (creates Plugins\UnrealMCP\ automatically)
 xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "Plugins\UnrealMCP"
 
-# macOS / Linux — run from your UE project root
+# macOS / Linux — from your UE project root
 cp -r ~/Desktop/unreal-engine-mcp/UnrealMCP Plugins/
 ```
+
+> **Important**: Run this from the project root (where `.uproject` is), NOT from inside the `Plugins/` folder.
 
 3. Build and enable the plugin:
    - Right-click your `.uproject` file → "Generate Visual Studio project files"

@@ -49,7 +49,7 @@ Unreal Accelerator（インテリジェンスレイヤー）
 * Node.js 18+（本 Power の開発/テスト用のみ）
 * （オプション）[Flopperam API Key](https://flopperam.com/account) — 有料 Hosted MCP のみ必要
 
-> **完全なインストール手順は [SETUP.md](SETUP.md) を参照してください**
+> **完全なインストール手順は下記のインストールセクションを参照してください**
 
 ## インストール
 

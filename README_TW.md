@@ -154,7 +154,7 @@ graph TD
 - Node.js 18+（僅本 Power 開發/測試需要）
 - （選用）[Flopperam API Key](https://flopperam.com/account) — 僅付費 Hosted MCP 需要
 
-> **完整安裝步驟請參考 [SETUP.md](SETUP.md)**
+> **完整安裝步驟請參考下方安裝章節**
 
 ### 安裝步驟
 

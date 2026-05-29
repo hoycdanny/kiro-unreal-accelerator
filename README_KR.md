@@ -49,7 +49,7 @@ Unreal Accelerator (인텔리전스 레이어)
 * Node.js 18+ (본 Power 개발/테스트용만)
 * (선택) [Flopperam API Key](https://flopperam.com/account) — 유료 Hosted MCP만 필요
 
-> **전체 설치 단계는 [SETUP.md](SETUP.md)를 참조하세요**
+> **전체 설치 단계는 아래 설치 섹션을 참조하세요**
 
 ## 설치
 
