@@ -4,6 +4,9 @@ dist/
 .DS_Store
 coverage/
 
+# Kiro local config
+.kiro/
+
 # IDE
 .vscode/
 .idea/
