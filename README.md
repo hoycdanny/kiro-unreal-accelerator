@@ -176,12 +176,16 @@ macOS / Linux:
 }
 ```
 
-### Step 4 — Install Auto-Guidance Hook (Recommended)
+### Step 4 — Install Auto-Guidance Hook (Required)
+
+This hook ensures the AI automatically activates the Power and uses MCP tools correctly on every prompt:
 
 ```bash
 mkdir -p .kiro/hooks
 cp hooks/pre-unreal-tool.kiro.hook .kiro/hooks/
 ```
+
+> Without this hook, you'll need to manually remind the AI to use MCP tools each time.
 
 ### Verify Connection
 

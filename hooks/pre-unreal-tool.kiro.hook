@@ -1,12 +1,13 @@
 {
-  "name": "Pre-Unreal Tool Guidance",
-  "version": "1.0.0",
-  "description": "Automatically reminds the AI to activate the Unreal Accelerator Power and load the appropriate Steering File before processing each request.",
+  "enabled": true,
+  "name": "Auto Activate Unreal Power",
+  "description": "Automatically reminds the agent to activate kiro-unreal-accelerator power and use MCP tools for all Unreal operations on every prompt.",
+  "version": "1.2",
   "when": {
     "type": "promptSubmit"
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Before responding, check if this request is related to Unreal Engine development. If so: 1) Activate the Kiro Unreal Accelerator Power if not already active. 2) Identify the relevant steering file(s) from steering/ directory based on the topic (material-workflow, blueprint-logic, performance, architecture, asset-pipeline, blueprint-patterns, ue5-features, platform-compat, gas-patterns, ui-patterns). 3) Load the steering file content to inform your response. 4) Use the appropriate MCP tools as defined in POWER.md intent routing rules."
+    "prompt": "This is an Unreal Engine 5.7 project. Follow these rules:\n1. Activate kiro-unreal-accelerator power if not already active.\n2. ALWAYS prefer MCP tools over file tools for Unreal assets. .uasset/.umap files are binary — NEVER read or write them with file tools.\n3. Before answering domain-specific questions, consult the relevant steering file: material-workflow.md, blueprint-logic.md, performance.md, architecture.md, asset-pipeline.md, blueprint-patterns.md, ue5-features.md, platform-compat.md, gas-patterns.md, ui-patterns.md.\n4. For Blueprint: use read_blueprint_content / analyze_blueprint_graph / get_blueprint_variable_details / get_blueprint_function_details via MCP.\n5. For level/scene: use get_actors_in_level / find_actors_by_name / scene_query via MCP.\n6. For materials: use get_available_materials / apply_material_to_actor via MCP. Do NOT use set_component_property with OverrideMaterials (known broken). Use Blueprint SCS approach instead.\n7. NEVER use the 'ce' console command via MCP — it causes an immediate Editor crash.\n8. Only use file-reading tools for plain-text files (.ini, .uproject, .json, .cpp, .h)."
   }
 }
