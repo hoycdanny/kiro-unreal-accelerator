@@ -68,14 +68,14 @@ cd ~/Desktop
 git clone https://github.com/flopperam/unreal-engine-mcp.git
 ```
 
-2. Copy the `UnrealMCP` plugin into your Unreal project:
+2. Copy the `UnrealMCP` plugin into your Unreal project's `Plugins/` folder:
 
 ```bash
-# Windows (CMD)
-xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "C:\Users\<YOU>\Documents\Unreal Projects\<YOUR_PROJECT>\Plugins\UnrealMCP"
+# Windows (CMD) — run from your UE project root
+xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "Plugins\UnrealMCP"
 
-# macOS / Linux
-cp -r ~/Desktop/unreal-engine-mcp/UnrealMCP ~/Documents/Unreal\ Projects/<YOUR_PROJECT>/Plugins/
+# macOS / Linux — run from your UE project root
+cp -r ~/Desktop/unreal-engine-mcp/UnrealMCP Plugins/
 ```
 
 3. Build and enable the plugin:

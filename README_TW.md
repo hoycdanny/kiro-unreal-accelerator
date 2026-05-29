@@ -180,8 +180,16 @@ git clone https://github.com/flopperam/unreal-engine-mcp.git
 
 **步驟 2 — 複製 UnrealMCP Plugin 到你的 UE 專案**
 
+在你的 UE 專案根目錄下執行：
+
 ```cmd
-xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "C:\Users\<你的使用者名稱>\Documents\Unreal Projects\<你的專案名稱>\Plugins\UnrealMCP"
+:: Windows (CMD) — 在 UE 專案根目錄下執行
+xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "Plugins\UnrealMCP"
+```
+
+```bash
+# macOS / Linux — 在 UE 專案根目錄下執行
+cp -r ~/Desktop/unreal-engine-mcp/UnrealMCP Plugins/
 ```
 
 最終結構應該是：
