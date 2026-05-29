@@ -135,7 +135,7 @@ Edit `mcp.json` or `.kiro/settings/mcp.json`:
 }
 ```
 
-> Replace `C:/Users/<YOU>/Desktop/unreal-engine-mcp/Python` with the actual path where you cloned the repo.
+> Replace `C:/Users/<YOU>/Desktop/unreal-engine-mcp/Python` with the actual path where you cloned the repo. Use forward slashes `/` or double backslashes `\\` in JSON — single backslashes `\` will cause parse errors.
 
 **Option 2: Hosted Flop MCP (Paid)**
 

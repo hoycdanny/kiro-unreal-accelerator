@@ -139,7 +139,7 @@ uv run unreal_mcp_server_advanced.py
 }
 ```
 
-> 将路径替换为你实际 clone 的位置。使用正斜杠 `/`。
+> 将路径替换为你实际 clone 的位置。JSON 中路径必须使用正斜线 `/` 或双反斜线 `\\`，单反斜线 `\` 会导致解析错误。
 
 **方式 2：Hosted Flop MCP（付费）**
 
