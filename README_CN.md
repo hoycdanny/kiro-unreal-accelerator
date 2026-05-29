@@ -43,10 +43,13 @@ Unreal Accelerator（智能层）
 
 ## 前置需求
 
-* [Unreal Engine 5.5+](https://www.unrealengine.com/)（5.5 / 5.6 / 5.7 支持）已安装 FlopAI 插件
+* [Unreal Engine 5.5+](https://www.unrealengine.com/)（5.5 / 5.6 / 5.7 支持）
 * [Kiro IDE](https://kiro.dev/docs/getting-started/installation)
-* [Flopperam API Key](https://flopperam.com/account)（Hosted MCP 用）或 Python 3.12+（Local MCP 用）
+* Python 3.12+ 和 [uv](https://docs.astral.sh/uv/getting-started/installation/)（Local MCP 用）
 * Node.js 18+（仅本 Power 开发/测试需要）
+* （可选）[Flopperam API Key](https://flopperam.com/account) — 仅付费 Hosted MCP 需要
+
+> **完整安装步骤请参考 [SETUP.md](SETUP.md)**
 
 ## 安装
 
@@ -56,21 +59,64 @@ Unreal Accelerator（智能层）
 
 ### 步骤 2 — 安装 MCP Server
 
-本 Power 使用 [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp) — 最先进的 UE MCP Server，支持 UE 5.5 / 5.6 / 5.7。
+本 Power 使用 [flopperam/unreal-engine-mcp](https://github.com/flopperam/unreal-engine-mcp)，支持 UE 5.5 / 5.6 / 5.7。
 
 **方式 1：开源本地 MCP（免费，推荐）**
 
-1. Clone repo：`git clone https://github.com/flopperam/unreal-engine-mcp.git`
-2. 将 `UnrealMCP/` 文件夹复制到你的 UE 项目 `Plugins/` 目录
-3. 重新生成项目文件、编译 Plugin，在 Editor 中启用（Edit → Plugins → "UnrealMCP"）
-4. 安装 Python 3.12+ 和 [uv](https://docs.astral.sh/uv/getting-started/installation/)
+**2a — Clone repo 到固定位置（不要放在 UE 项目里面）**
+
+```cmd
+cd %USERPROFILE%\Desktop
+git clone https://github.com/flopperam/unreal-engine-mcp.git
+```
+
+**2b — 复制 UnrealMCP Plugin 到你的 UE 项目**
+
+在 UE 项目根目录（`.uproject` 所在位置）执行：
+
+```cmd
+xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "Plugins\UnrealMCP"
+```
+
+最终结构：
+```
+你的UE项目/
+├── Plugins/
+│   └── UnrealMCP/
+│       ├── Source/
+│       └── UnrealMCP.uplugin
+├── Content/
+└── 你的项目.uproject
+```
+
+**2c — 编译并启用 Plugin**
+
+1. 右键 `.uproject` → "Generate Visual Studio project files"
+2. 打开 `.sln`，选择 **Development Editor** + **Win64**，Build
+3. 打开 Unreal Editor → Edit → Plugins → 搜索 "UnrealMCP" → 启用 → 重启
+
+**2d — 安装 Python 环境**
+
+```powershell
+# 安装 uv（PowerShell）
+irm https://astral.sh/uv/install.ps1 | iex
+```
+
+**2e — 验证 Python Server**
+
+```cmd
+cd %USERPROFILE%\Desktop\unreal-engine-mcp\Python
+uv run unreal_mcp_server_advanced.py
+```
+
+启动无错误后按 Ctrl+C 停止。Kiro 会自动管理 Server。
 
 **方式 2：Hosted Flop MCP（付费，50+ 完整工具）**
 
 如需完整 50+ 工具且不想本地架设：
 
 1. 前往 [flopperam.com/account](https://flopperam.com/account) 获取 API Key
-2. 安装 FlopAI Unreal 插件 — 参见 [flopperam.com/docs](https://flopperam.com/docs)（Installation 标签页）
+2. 安装 FlopAI Unreal 插件 — 参见 [flopperam.com/docs](https://flopperam.com/docs)
 
 ### 步骤 3 — 配置 MCP 连接
 
@@ -85,7 +131,7 @@ Unreal Accelerator（智能层）
       "command": "uv",
       "args": [
         "--directory",
-        "<path/to/unreal-engine-mcp/Python>",
+        "C:/Users/<你的用户名>/Desktop/unreal-engine-mcp/Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
@@ -93,6 +139,8 @@ Unreal Accelerator（智能层）
   }
 }
 ```
+
+> 将路径替换为你实际 clone 的位置。使用正斜杠 `/`。
 
 **方式 2：Hosted Flop MCP（付费）**
 

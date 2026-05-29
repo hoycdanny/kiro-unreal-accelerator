@@ -43,10 +43,13 @@ Unreal Accelerator (인텔리전스 레이어)
 
 ## 사전 요구사항
 
-* [Unreal Engine 5.5+](https://www.unrealengine.com/) (5.5 / 5.6 / 5.7 지원) FlopAI 플러그인 설치 필요
+* [Unreal Engine 5.5+](https://www.unrealengine.com/) (5.5 / 5.6 / 5.7 지원)
 * [Kiro IDE](https://kiro.dev/docs/getting-started/installation)
-* [Flopperam API Key](https://flopperam.com/account) (Hosted MCP용) 또는 Python 3.12+ (Local MCP용)
+* Python 3.12+ 및 [uv](https://docs.astral.sh/uv/getting-started/installation/) (Local MCP용)
 * Node.js 18+ (본 Power 개발/테스트용만)
+* (선택) [Flopperam API Key](https://flopperam.com/account) — 유료 Hosted MCP만 필요
+
+> **전체 설치 단계는 [SETUP.md](SETUP.md)를 참조하세요**
 
 ## 설치
 
@@ -60,17 +63,60 @@ Kiro 열기 → 왼쪽 패널에서 Powers 아이콘 클릭 → "+" 클릭 → "
 
 **방법 1: 오픈소스 로컬 MCP (무료, 권장)**
 
-1. 리포지토리 클론: `git clone https://github.com/flopperam/unreal-engine-mcp.git`
-2. `UnrealMCP/` 폴더를 UE 프로젝트의 `Plugins/` 디렉토리에 복사
-3. 프로젝트 파일 재생성, 플러그인 빌드, Editor에서 활성화 (Edit → Plugins → "UnrealMCP")
-4. Python 3.12+ 및 [uv](https://docs.astral.sh/uv/getting-started/installation/) 설치
+**2a — 리포지토리를 고정 위치에 클론 (UE 프로젝트 안에 넣지 마세요)**
+
+```cmd
+cd %USERPROFILE%\Desktop
+git clone https://github.com/flopperam/unreal-engine-mcp.git
+```
+
+**2b — UnrealMCP 플러그인을 UE 프로젝트에 복사**
+
+UE 프로젝트 루트 (`.uproject`가 있는 위치)에서 실행:
+
+```cmd
+xcopy /E /I "%USERPROFILE%\Desktop\unreal-engine-mcp\UnrealMCP" "Plugins\UnrealMCP"
+```
+
+최종 구조:
+```
+UE프로젝트/
+├── Plugins/
+│   └── UnrealMCP/
+│       ├── Source/
+│       └── UnrealMCP.uplugin
+├── Content/
+└── 프로젝트.uproject
+```
+
+**2c — 플러그인 빌드 및 활성화**
+
+1. `.uproject` 우클릭 → "Generate Visual Studio project files"
+2. `.sln` 열기, **Development Editor** + **Win64** 로 빌드
+3. Unreal Editor → Edit → Plugins → "UnrealMCP" 검색 → 활성화 → 재시작
+
+**2d — Python 환경 설치**
+
+```powershell
+# uv 설치 (PowerShell)
+irm https://astral.sh/uv/install.ps1 | iex
+```
+
+**2e — Python Server 검증**
+
+```cmd
+cd %USERPROFILE%\Desktop\unreal-engine-mcp\Python
+uv run unreal_mcp_server_advanced.py
+```
+
+오류 없이 시작되면 Ctrl+C로 중지. Kiro가 자동으로 Server를 관리합니다.
 
 **방법 2: Hosted Flop MCP (유료, 50+ 전체 도구)**
 
 완전한 50+ 도구 경험이 필요하고 로컬 설정을 원하지 않는 경우:
 
 1. [flopperam.com/account](https://flopperam.com/account)에서 API Key 획득
-2. FlopAI Unreal 플러그인 설치 — [flopperam.com/docs](https://flopperam.com/docs) (Installation 탭) 참조
+2. FlopAI Unreal 플러그인 설치 — [flopperam.com/docs](https://flopperam.com/docs) 참조
 
 ### 단계 3 — MCP 연결 설정
 
@@ -85,7 +131,7 @@ Kiro 열기 → 왼쪽 패널에서 Powers 아이콘 클릭 → "+" 클릭 → "
       "command": "uv",
       "args": [
         "--directory",
-        "<path/to/unreal-engine-mcp/Python>",
+        "C:/Users/<사용자이름>/Desktop/unreal-engine-mcp/Python",
         "run",
         "unreal_mcp_server_advanced.py"
       ]
@@ -93,6 +139,8 @@ Kiro 열기 → 왼쪽 패널에서 Powers 아이콘 클릭 → "+" 클릭 → "
   }
 }
 ```
+
+> 경로를 실제 클론한 위치로 변경하세요. 슬래시 `/`를 사용하세요.
 
 **방법 2: Hosted Flop MCP (유료)**
 

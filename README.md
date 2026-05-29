@@ -49,6 +49,8 @@ Unreal Accelerator (Intelligence Layer)
 * Node.js 18+ (for development/testing of this Power only)
 * (Optional) [Flopperam API Key](https://flopperam.com/account) — only if using the paid Hosted MCP
 
+> **For complete step-by-step installation instructions, see [SETUP.md](SETUP.md)**
+
 ## Installation
 
 ### Step 1 — Install this Power in Kiro

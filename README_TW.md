@@ -148,10 +148,13 @@ graph TD
 
 ### 前置需求
 
+- [Unreal Engine 5.5+](https://www.unrealengine.com/)（支援 5.5 / 5.6 / 5.7）
 - [Kiro IDE](https://kiro.dev/docs/getting-started/installation)
-- [Unreal Engine 5.5+](https://www.unrealengine.com/)（支援 5.5 / 5.6 / 5.7）已安裝 FlopAI Plugin
-- [Flopperam API Key](https://flopperam.com/account)（Hosted MCP 用）或 Python 3.12+（Local MCP 用）
+- Python 3.12+ 和 [uv](https://docs.astral.sh/uv/getting-started/installation/)（Local MCP 用）
 - Node.js 18+（僅本 Power 開發/測試需要）
+- （選用）[Flopperam API Key](https://flopperam.com/account) — 僅付費 Hosted MCP 需要
+
+> **完整安裝步驟請參考 [SETUP.md](SETUP.md)**
 
 ### 安裝步驟
 
