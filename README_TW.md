@@ -312,6 +312,71 @@ cp hooks/pre-unreal-tool.kiro.hook .kiro/hooks/
 
 在 Kiro 中輸入任何 Unreal 相關指令（例如「列出目前場景中的所有 Actor」）。如果 AI 正確回應，表示連線成功。
 
+---
+
+## 使用方式
+
+安裝完成後，只要用自然語言跟 Kiro 對話即可。AI 會自動啟動 Power、選擇正確的 MCP 工具、在你的 Unreal Editor 中執行操作。
+
+### 新手入門（第一次使用）
+
+安裝完成後，確保 Unreal Editor 已開啟你的專案，然後在 Kiro 中依序嘗試：
+
+**1. 查看專案狀態：**
+```
+幫我看看目前關卡裡有什麼
+```
+
+**2. 檢查 Blueprint：**
+```
+分析 BP_FirstPersonCharacter 這個 Blueprint，列出它的變數、元件和事件圖
+```
+
+**3. 建立東西：**
+```
+建立一個新的 Actor Blueprint 叫 BP_PickupItem，加上 StaticMeshComponent 和 SphereCollision
+```
+
+**4. 修改場景：**
+```
+在位置 (0, 0, 300) 生成一個 PointLight，強度 5000
+```
+
+### 你可以問什麼？
+
+| 類別 | 範例指令 |
+|------|---------|
+| 場景與關卡 | 「列出關卡中所有 Actor」、「在 (100, 0, 50) 生成一個方塊」、「刪除所有叫 TempBox 的 Actor」 |
+| Blueprint | 「建立一個角色 Blueprint，加上 Camera 和 SpringArm」、「在 BP_Player 加一個 Health 變數（Float, 預設 100）」、「顯示 BP_Door 的事件圖」 |
+| 材質 | 「找出專案中所有材質」、「建立一個紅色金屬材質，粗糙度 0.2」、「把 M_Gold 套用到 Statue 這個 Actor」 |
+| 效能 | 「分析場景效能」、「這個關卡有多少 Draw Call？」、「檢查有沒有效能反模式」 |
+| 程式碼品質 | 「檢查所有資產的命名規範」、「有沒有循環依賴？」、「我的 Blueprint/C++ 比例合理嗎？」 |
+| 平台相容性 | 「我的專案可以在 iOS 上跑嗎？」、「檢查 Android 的 Shader 相容性」、「PS5 的記憶體預算是多少？」 |
+| 建置 | 「幫我建置 Windows Shipping 版本」、「解析上次的建置日誌找錯誤」 |
+| AI 與 GAS | 「建立一個敵人巡邏行為樹」、「建立一個火球技能，冷卻 3 秒，消耗 50 魔力」 |
+
+### 使用技巧
+
+- 你不需要記住任何工具名稱或 API — 只要描述你想做什麼
+- 如果你的請求不夠明確，AI 會問你釐清問題
+- 可以串連請求：「建立一個 Blueprint，加上 Mesh 元件，然後在 (0,0,0) 生成它」
+- 出錯的話，說「復原」或描述你想修正什麼
+- 複雜任務建議拆成步驟：先描述目標，讓 AI 規劃
+
+### 範例工作流：建立一個拾取物
+
+```
+1. 「建立一個 Actor Blueprint 叫 BP_Gem，加上 StaticMeshComponent（球形）和 SphereCollision 做重疊偵測」
+
+2. 「加一個變數 PointValue（Integer, 預設 10）和一個事件分派器 OnCollected」
+
+3. 「在事件圖中：當與玩家 BeginOverlap 時，呼叫 OnCollected，把 PointValue 加到玩家分數，然後銷毀自己」
+
+4. 「在關卡中隨機位置生成 5 個 BP_Gem」
+```
+
+---
+
 ### 專案結構
 
 ```

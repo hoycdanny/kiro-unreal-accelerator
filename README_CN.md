@@ -197,18 +197,63 @@ cp hooks/pre-unreal-tool.kiro.hook .kiro/hooks/
 
 ## 使用方法
 
-用自然语言告诉 AI 你想做什么，它会自动选择并执行合适的 MCP 工具。
+安装完成后，只要用自然语言跟 Kiro 对话即可。AI 会自动启动 Power、选择正确的 MCP 工具、在你的 Unreal Editor 中执行操作。
 
-### 示例命令
+### 新手入门（第一次使用）
+
+确保 Unreal Editor 已打开你的项目，然后在 Kiro 中依次尝试：
+
+**1. 查看项目状态：**
+```
+帮我看看当前关卡里有什么
+```
+
+**2. 检查 Blueprint：**
+```
+分析 BP_FirstPersonCharacter 这个 Blueprint，列出它的变量、组件和事件图
+```
+
+**3. 创建东西：**
+```
+创建一个新的 Actor Blueprint 叫 BP_PickupItem，加上 StaticMeshComponent 和 SphereCollision
+```
+
+**4. 修改场景：**
+```
+在位置 (0, 0, 300) 生成一个 PointLight，强度 5000
+```
+
+### 你可以问什么？
+
+| 类别 | 示例命令 |
+|------|---------|
+| 场景与关卡 | "列出关卡中所有 Actor"、"在 (100, 0, 50) 生成一个方块"、"删除所有叫 TempBox 的 Actor" |
+| Blueprint | "创建一个角色 Blueprint，加上 Camera 和 SpringArm"、"在 BP_Player 加一个 Health 变量（Float, 默认 100）"、"显示 BP_Door 的事件图" |
+| 材质 | "找出项目中所有材质"、"创建一个红色金属材质，粗糙度 0.2"、"把 M_Gold 应用到 Statue 这个 Actor" |
+| 性能 | "分析场景性能"、"这个关卡有多少 Draw Call？"、"检查有没有性能反模式" |
+| 代码质量 | "检查所有资产的命名规范"、"有没有循环依赖？"、"我的 Blueprint/C++ 比例合理吗？" |
+| 平台兼容性 | "我的项目可以在 iOS 上跑吗？"、"检查 Android 的 Shader 兼容性"、"PS5 的内存预算是多少？" |
+| 构建 | "帮我构建 Windows Shipping 版本"、"解析上次的构建日志找错误" |
+| AI 与 GAS | "创建一个敌人巡逻行为树"、"创建一个火球技能，冷却 3 秒，消耗 50 法力" |
+
+### 使用技巧
+
+- 你不需要记住任何工具名称或 API — 只要描述你想做什么
+- 如果你的请求不够明确，AI 会问你澄清问题
+- 可以串联请求："创建一个 Blueprint，加上 Mesh 组件，然后在 (0,0,0) 生成它"
+- 出错的话，说"撤销"或描述你想修正什么
+- 复杂任务建议拆成步骤：先描述目标，让 AI 规划
+
+### 示例工作流：创建一个拾取物
 
 ```
-"创建一个带 SpringArm 和 Camera 的角色 Blueprint"
-"对 Environment 文件夹中的所有网格应用 Nanite"
-"创建一个粗糙度 0.3 的 PBR 金属材质"
-"检查项目的代码架构质量"
-"我的项目兼容 iOS 吗？"
-"分析 BP_MainCharacter 的依赖关系"
-"执行性能审计工作流"
+1. "创建一个 Actor Blueprint 叫 BP_Gem，加上 StaticMeshComponent（球形）和 SphereCollision 做重叠检测"
+
+2. "加一个变量 PointValue（Integer, 默认 10）和一个事件分发器 OnCollected"
+
+3. "在事件图中：当与玩家 BeginOverlap 时，调用 OnCollected，把 PointValue 加到玩家分数，然后销毁自己"
+
+4. "在关卡中随机位置生成 5 个 BP_Gem"
 ```
 
 ## 开发

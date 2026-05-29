@@ -193,9 +193,66 @@ Type any Unreal-related command in Kiro (e.g., "List all actors in the current l
 
 ## Usage
 
-Tell the AI what you'd like to do in natural language. It will automatically select and execute the appropriate MCP tools.
+Once installed, just talk to Kiro in natural language. The AI will automatically activate the Power, select the right MCP tools, and execute operations in your Unreal Editor.
 
-### Example Commands
+### Getting Started (First Time)
+
+After completing installation, open your Unreal project in the Editor, then open Kiro and try these commands in order:
+
+**1. Check your project status:**
+```
+Show me what's in my current level
+```
+
+**2. Inspect a Blueprint:**
+```
+Analyze the Blueprint BP_FirstPersonCharacter — show me its variables, components, and event graph
+```
+
+**3. Create something:**
+```
+Create a new Actor Blueprint called BP_PickupItem with a StaticMeshComponent and a SphereCollision
+```
+
+**4. Modify the scene:**
+```
+Spawn a PointLight at position (0, 0, 300) with intensity 5000
+```
+
+### What Can You Ask?
+
+| Category | Example Commands |
+|----------|-----------------|
+| Scene & Level | "List all actors in the level", "Spawn a cube at (100, 0, 50)", "Delete all actors named TempBox" |
+| Blueprint | "Create a character Blueprint with Camera and SpringArm", "Add a Health variable (Float, default 100) to BP_Player", "Show me the event graph of BP_Door" |
+| Materials | "Find all materials in the project", "Create a red metallic material with roughness 0.2", "Apply M_Gold to the actor named Statue" |
+| Performance | "Analyze the scene performance", "How many draw calls does this level have?", "Check for performance anti-patterns" |
+| Code Quality | "Check naming conventions for all assets", "Are there any circular dependencies?", "Is my Blueprint/C++ balance reasonable?" |
+| Platform | "Is my project compatible with iOS?", "Check shader compatibility for Android", "What's my memory budget on PS5?" |
+| Build | "Build the project for Windows Shipping", "Parse the last build log for errors" |
+| AI & GAS | "Create a patrol behavior tree for enemies", "Create a fireball ability with 3s cooldown and 50 mana cost" |
+
+### Tips
+
+- You don't need to remember any tool names or APIs — just describe what you want
+- The AI will ask clarifying questions if your request is ambiguous
+- You can chain requests: "Create a Blueprint, add a mesh component, then spawn it at (0,0,0)"
+- If something goes wrong, say "undo" or describe what you want to fix
+- For complex tasks, break them into steps: first describe the goal, then let the AI plan
+
+### Example Workflow: Build a Pickup Item
+
+```
+1. "Create an Actor Blueprint called BP_Gem with a StaticMeshComponent (sphere shape) and a SphereCollision for overlap detection"
+
+2. "Add a variable called PointValue (Integer, default 10) and an event dispatcher called OnCollected"
+
+3. "In the event graph: on BeginOverlap with the player, call OnCollected, add PointValue to the player's score, then destroy self"
+
+4. "Spawn 5 instances of BP_Gem scattered around the level at random positions"
+```
+
+### Example Commands (Quick Reference)
 
 ```
 "Create a character Blueprint with SpringArm and Camera"
